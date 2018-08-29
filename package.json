@@ -9,8 +9,10 @@
     },
     "dependencies": {
         "@appbaseio/reactivesearch": "^2.8.2",
+        "@divyanshu013/media": "^1.0.0",
         "antd": "^3.8.2",
         "emotion": "^9.2.6",
+        "prop-types": "^15.6.2",
         "react": "^16.4.2",
         "react-dom": "^16.4.2",
         "react-emotion": "^9.2.6",
