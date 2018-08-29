@@ -3,14 +3,16 @@ import { Button, Modal } from 'antd';
 
 import Search from './components/Search';
 
+const { APPNAME: appname, CREDENTIALS: credentials, APPID: appid } = window;
+
 // available from shopify store
-if (!APPNAME) {
+if (!appname) {
     console.warn('APPNAME not available'); // eslint-disable-line
 }
-if (!CREDENTIALS) {
+if (!credentials) {
     console.warn('CREDENTIALS not available'); // eslint-disable-line
 }
-if (!APPID) {
+if (!appid) {
     console.warn('APPID not available'); // eslint-disable-line
 }
 
@@ -45,9 +47,9 @@ class App extends Component {
                             css={{ top: 0, height: '100vh' }}
                         >
                             <Search
-                                appname={APPNAME}
-                                credentials={CREDENTIALS}
-                                appid={APPID}
+                                appname={appname}
+                                credentials={credentials}
+                                appid={appid}
                             />
                         </Modal>
                     )}
