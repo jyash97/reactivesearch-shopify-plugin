@@ -3,7 +3,9 @@ import { Button, Modal } from 'antd';
 
 import Search from './components/Search';
 
-const { APPNAME: appname, CREDENTIALS: credentials, APPID: appid } = window;
+const appname = window.APPNAME;
+const credentials = window.CREDENTIALS;
+const appid = window.APPID;
 
 // available from shopify store
 if (!appname) {
