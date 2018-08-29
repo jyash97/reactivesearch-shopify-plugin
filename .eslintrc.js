@@ -4,6 +4,11 @@ module.exports = {
     env: {
         browser: true,
     },
+    globals: {
+        APPID: true,
+        APPNAME: true,
+        CREDENTIALS: true,
+    },
     extends: [
         'airbnb',
         'plugin:prettier/recommended',
