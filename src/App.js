@@ -31,7 +31,7 @@ class App extends Component {
 
     render() {
         const { isOpen } = this.state;
-        const isValid = APPNAME && CREDENTIALS && APPID;
+        const isValid = appname && credentials && appid;
         return (
             <Fragment>
                 <Button
