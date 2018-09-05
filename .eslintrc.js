@@ -18,6 +18,7 @@ module.exports = {
     ],
     rules: {
         indent: 0,
+        camelcase: 0,
 
         'prettier/prettier': 'error',
 
