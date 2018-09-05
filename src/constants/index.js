@@ -1,3 +1,3 @@
-const accapi = 'https://accapi-staging.bottleneck.io';
+const accapi = 'https://accapi.appbase.io';
 
 export { accapi }; // eslint-disable-line
