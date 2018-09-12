@@ -22,9 +22,9 @@ class Search extends Component {
 
     async componentDidMount() {
         try {
-            const { appid, credentials } = this.props;
+            const { appname, credentials } = this.props;
             const preferences = await fetch(
-                `${accapi}/app/${appid}/preferences`,
+                `${accapi}/app/${appname}/preferences`,
                 {
                     headers: {
                         Authorization: `Basic ${btoa(credentials)}`,
@@ -183,7 +183,6 @@ class Search extends Component {
 Search.propTypes = {
     appname: string.isRequired,
     credentials: string.isRequired,
-    appid: string.isRequired,
 };
 
 export default Search;

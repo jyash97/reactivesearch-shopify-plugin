@@ -5,7 +5,6 @@ import Search from './components/Search';
 
 const appname = window.APPNAME;
 const credentials = window.CREDENTIALS;
-const appid = window.APPID;
 
 // available from shopify store
 if (!appname) {
@@ -13,9 +12,6 @@ if (!appname) {
 }
 if (!credentials) {
     console.warn('CREDENTIALS not available'); // eslint-disable-line
-}
-if (!appid) {
-    console.warn('APPID not available'); // eslint-disable-line
 }
 
 class App extends Component {
@@ -31,7 +27,7 @@ class App extends Component {
 
     render() {
         const { isOpen } = this.state;
-        const isValid = appname && credentials && appid;
+        const isValid = appname && credentials;
         return (
             <Fragment>
                 <Button
@@ -51,7 +47,6 @@ class App extends Component {
                             <Search
                                 appname={appname}
                                 credentials={credentials}
-                                appid={appid}
                             />
                         </Modal>
                     )}
