@@ -23,6 +23,7 @@ class Search extends Component {
     async componentDidMount() {
         try {
             const { appname, credentials } = this.props;
+            console.log({ appname, credentials });
             const preferences = await fetch(
                 `${accapi}/app/${appname}/preferences`,
                 {
