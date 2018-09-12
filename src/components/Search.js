@@ -18,12 +18,12 @@ const { Meta } = Card;
 class Search extends Component {
     state = {
         preferences: null,
+        theme: {},
     };
 
     async componentDidMount() {
         try {
             const { appname, credentials } = this.props;
-            console.log({ appname, credentials });
             const preferences = await fetch(
                 `${accapi}/app/${appname}/preferences`,
                 {
@@ -32,7 +32,10 @@ class Search extends Component {
                     },
                 },
             ).then(res => res.json());
-            this.setState({ preferences: preferences.message.default });
+            this.setState({
+                preferences: preferences.message.default,
+                theme: preferences.message._theme,
+            });
         } catch (error) {
             // eslint-disable-next-line
             console.error(error);
@@ -41,7 +44,7 @@ class Search extends Component {
 
     render() {
         const { appname, credentials } = this.props;
-        const { preferences } = this.state;
+        const { preferences, theme } = this.state;
         if (!preferences) {
             return (
                 <div css={{ display: 'flex', justifyContent: 'center' }}>
@@ -54,7 +57,7 @@ class Search extends Component {
             key => key !== 'search' && key !== 'result',
         );
         return (
-            <ReactiveBase app={appname} credentials={credentials}>
+            <ReactiveBase app={appname} credentials={credentials} theme={theme}>
                 <div css={{ maxWidth: 1200, margin: '25px auto' }}>
                     <DataSearch
                         componentId="search"
