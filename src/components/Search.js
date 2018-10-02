@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     ReactiveBase,
-    DataSearch,
+    CategorySearch,
     MultiList,
     ReactiveList,
     SelectedFilters,
@@ -11,6 +11,7 @@ import { mediaMax } from '@divyanshu013/media';
 import { css } from 'react-emotion';
 import { Card, Spin } from 'antd';
 
+import Suggestions from './Suggestions';
 import { accapi } from '../constants';
 
 const { Meta } = Card;
@@ -59,14 +60,35 @@ class Search extends Component {
         return (
             <ReactiveBase app={appname} credentials={credentials} theme={theme}>
                 <div css={{ maxWidth: 1200, margin: '25px auto' }}>
-                    <DataSearch
+                    <CategorySearch
                         componentId="search"
                         filterLabel="Search"
                         dataField={['title', 'body_html', 'vendor']}
                         placeholder="Search for products..."
                         iconPosition="right"
                         css={{ marginBottom: 20 }}
+                        renderSuggestions={({
+                            currentValue,
+                            categories,
+                            isOpen,
+                            getItemProps,
+                            highlightedIndex,
+                            parsedSuggestions,
+                        }) =>
+                            isOpen &&
+                            Boolean(currentValue.length) && (
+                                <Suggestions
+                                    currentValue={currentValue}
+                                    categories={categories}
+                                    getItemProps={getItemProps}
+                                    highlightedIndex={highlightedIndex}
+                                    parsedSuggestions={parsedSuggestions}
+                                    themeConfig={theme}
+                                />
+                            )
+                        }
                         {...search}
+                        categoryField="product_type.keyword" // batteries is messing up category field
                     />
                     <div
                         css={{
@@ -104,7 +126,7 @@ class Search extends Component {
                                     title,
                                     body_html,
                                     handle,
-                                    image: { src },
+                                    image,
                                     variants,
                                 }) => (
                                     <a href={`products/${handle}`} key={_id}>
@@ -112,11 +134,13 @@ class Search extends Component {
                                             hoverable
                                             bordered={false}
                                             cover={
-                                                <img
-                                                    src={src}
-                                                    width="100%"
-                                                    alt={title}
-                                                />
+                                                image && (
+                                                    <img
+                                                        src={image.src}
+                                                        width="100%"
+                                                        alt={title}
+                                                    />
+                                                )
                                             }
                                         >
                                             <Meta
