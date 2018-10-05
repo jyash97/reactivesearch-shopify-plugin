@@ -94,12 +94,16 @@ const Suggestions = ({
                                         }}
                                     />
                                 </div>
-                                {suggestion.source.variants[0].price && (
-                                    <div>
-                                        {currency}{' '}
-                                        {suggestion.source.variants[0].price}
-                                    </div>
-                                )}
+                                {suggestion.source.variants &&
+                                    suggestion.source.variants[0].price && (
+                                        <div>
+                                            {currency}{' '}
+                                            {
+                                                suggestion.source.variants[0]
+                                                    .price
+                                            }
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     </div>
