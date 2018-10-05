@@ -1,6 +1,7 @@
 import React from 'react';
 import { string, object, arrayOf, func, number } from 'prop-types';
 import Highlight from 'react-highlight-words';
+import strip from 'striptags';
 
 const Suggestions = ({
     currentValue,
@@ -9,6 +10,7 @@ const Suggestions = ({
     highlightedIndex,
     parsedSuggestions,
     themeConfig,
+    currency,
 }) => (
     <div
         css={{
@@ -75,9 +77,11 @@ const Suggestions = ({
                                 >
                                     <Highlight
                                         searchWords={currentValue.split(' ')}
-                                        textToHighlight={`${suggestion.source.body_html.slice(
-                                            0,
-                                            200,
+                                        textToHighlight={`${strip(
+                                            suggestion.source.body_html.slice(
+                                                0,
+                                                200,
+                                            ),
                                         )}${
                                             suggestion.source.body_html.length >
                                             200
@@ -92,6 +96,7 @@ const Suggestions = ({
                                 </div>
                                 {suggestion.source.variants[0].price && (
                                     <div>
+                                        {currency}{' '}
                                         {suggestion.source.variants[0].price}
                                     </div>
                                 )}
@@ -164,7 +169,7 @@ Suggestions.propTypes = {
     highlightedIndex: number,
     parsedSuggestions: arrayOf(object),
     themeConfig: object,
-    moneyFormat: string,
+    currency: string,
 };
 
 export default Suggestions;

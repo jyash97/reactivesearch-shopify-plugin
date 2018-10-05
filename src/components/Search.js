@@ -10,6 +10,7 @@ import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
 import { css } from 'react-emotion';
 import { Card, Spin } from 'antd';
+import strip from 'striptags';
 
 import Suggestions from './Suggestions';
 import { accapi } from '../constants';
@@ -20,6 +21,7 @@ class Search extends Component {
     state = {
         preferences: null,
         theme: {},
+        currency: '',
     };
 
     async componentDidMount() {
@@ -36,6 +38,9 @@ class Search extends Component {
             this.setState({
                 preferences: preferences.message.default,
                 theme: preferences.message._theme,
+                currency: preferences.message._store
+                    ? preferences.message._store.currency
+                    : '',
             });
         } catch (error) {
             // eslint-disable-next-line
@@ -45,7 +50,7 @@ class Search extends Component {
 
     render() {
         const { appname, credentials } = this.props;
-        const { preferences, theme } = this.state;
+        const { preferences, theme, currency } = this.state;
         if (!preferences) {
             return (
                 <div css={{ display: 'flex', justifyContent: 'center' }}>
@@ -84,6 +89,7 @@ class Search extends Component {
                                     highlightedIndex={highlightedIndex}
                                     parsedSuggestions={parsedSuggestions}
                                     themeConfig={theme}
+                                    currency={currency}
                                 />
                             )
                         }
@@ -112,7 +118,7 @@ class Search extends Component {
                             {otherComponents.map(listComponent => (
                                 <MultiList
                                     key={listComponent}
-                                    {...preferences['list-2']}
+                                    {...preferences[listComponent]}
                                 />
                             ))}
                         </div>
@@ -145,7 +151,7 @@ class Search extends Component {
                                         >
                                             <Meta
                                                 title={title}
-                                                description={body_html}
+                                                description={strip(body_html)}
                                             />
                                             <div
                                                 css={{
@@ -154,7 +160,10 @@ class Search extends Component {
                                                     marginTop: 10,
                                                 }}
                                             >
-                                                {variants && variants[0].price}
+                                                {variants &&
+                                                    `${currency} ${
+                                                        variants[0].price
+                                                    }`}
                                             </div>
                                         </Card>
                                     </a>
