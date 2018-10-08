@@ -63,7 +63,12 @@ class Search extends Component {
             key => key !== 'search' && key !== 'result',
         );
         return (
-            <ReactiveBase app={appname} credentials={credentials} theme={theme}>
+            <ReactiveBase
+                app={appname}
+                credentials={credentials}
+                theme={theme}
+                analytics
+            >
                 <div css={{ maxWidth: 1200, margin: '25px auto' }}>
                     <CategorySearch
                         componentId="search"
@@ -127,15 +132,24 @@ class Search extends Component {
                             <ReactiveList
                                 componentId="results"
                                 dataField="title"
-                                onData={({
-                                    _id,
-                                    title,
-                                    body_html,
-                                    handle,
-                                    image,
-                                    variants,
-                                }) => (
-                                    <a href={`products/${handle}`} key={_id}>
+                                onData={(
+                                    {
+                                        _id,
+                                        title,
+                                        body_html,
+                                        handle,
+                                        image,
+                                        variants,
+                                    },
+                                    triggerClickAnalytics,
+                                ) => (
+                                    <a
+                                        onClick={triggerClickAnalytics}
+                                        href={`products/${handle}`}
+                                        target="_blank"
+                                        rel="noreferrer noopener"
+                                        key={_id}
+                                    >
                                         <Card
                                             hoverable
                                             bordered={false}
