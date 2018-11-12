@@ -123,6 +123,7 @@ class Search extends Component {
                             {otherComponents.map(listComponent => (
                                 <MultiList
                                     key={listComponent}
+                                    componentId={listComponent}
                                     {...preferences[listComponent]}
                                 />
                             ))}
