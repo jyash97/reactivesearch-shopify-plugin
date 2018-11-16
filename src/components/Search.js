@@ -9,19 +9,40 @@ import {
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
 import { css } from 'react-emotion';
-import { Card, Spin } from 'antd';
+import { Card, Spin, Collapse, Button, Tooltip } from 'antd';
 import strip from 'striptags';
 
 import Suggestions from './Suggestions';
 import { accapi } from '../constants';
 
 const { Meta } = Card;
+const { Panel } = Collapse;
+
+const labelStyles = textColor => css`
+    ul li > label > span {
+        width: 80%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        color: ${textColor};
+    }
+`;
+
+const cardStyles = ({ textColor, titleColor }) => css`
+    .ant-card-meta-title {
+        color: ${titleColor};
+    }
+    .ant-card-meta-description {
+        color: ${textColor};
+    }
+`;
 
 class Search extends Component {
     state = {
         preferences: null,
         theme: {},
         currency: '',
+        toggleFilters: false,
     };
 
     async componentDidMount() {
@@ -35,9 +56,18 @@ class Search extends Component {
                     },
                 },
             ).then(res => res.json());
+            const { popularSearches } = await fetch(
+                `${accapi}/analytics/${appname}/popularsearches`,
+                {
+                    headers: {
+                        Authorization: `Basic ${btoa(credentials)}`,
+                    },
+                },
+            ).then(res => res.json());
             this.setState({
                 preferences: preferences.message.default,
                 theme: preferences.message._theme,
+                popularSearches,
                 currency: preferences.message._store
                     ? preferences.message._store.currency
                     : '',
@@ -48,9 +78,36 @@ class Search extends Component {
         }
     }
 
+    getMultiListProps = listComponentProps => {
+        const { title, ...restProps } = listComponentProps;
+        return restProps;
+    };
+
+    handleSmallScreen = () => {
+        this.setState(({ toggleFilters }) => ({
+            toggleFilters: !toggleFilters,
+        }));
+    };
+
+    getFontFamily = () => {
+        const { theme } = this.state;
+        let fontFamily = '';
+        if (theme.typography && theme.typography.fontFamily !== 'default') {
+            fontFamily = theme.typography.fontFamily; // eslint-disable-line
+        }
+        return fontFamily ? { fontFamily } : {};
+    };
+
     render() {
         const { appname, credentials } = this.props;
-        const { preferences, theme, currency } = this.state;
+        const {
+            preferences,
+            theme,
+            currency,
+            toggleFilters,
+            popularSearches,
+        } = this.state;
+        const isMobile = window.innerWidth < 768;
         if (!preferences) {
             return (
                 <div css={{ display: 'flex', justifyContent: 'center' }}>
@@ -69,12 +126,35 @@ class Search extends Component {
                 theme={theme}
                 analytics
             >
+                {isMobile ? (
+                    <Tooltip
+                        placement="leftTop"
+                        title={toggleFilters ? 'Show Results' : 'Show Filters'}
+                    >
+                        <Button
+                            type="primary"
+                            shape="circle"
+                            icon={toggleFilters ? 'close' : 'filter'}
+                            onClick={this.handleSmallScreen}
+                            css={{
+                                display: 'none',
+                                position: 'fixed',
+                                bottom: '20px',
+                                right: '20px',
+                                zIndex: 2,
+                                [mediaMax.medium]: { display: 'inline' },
+                            }}
+                        />
+                    </Tooltip>
+                ) : null}
+
                 <div css={{ maxWidth: 1200, margin: '25px auto' }}>
                     <CategorySearch
                         componentId="search"
                         filterLabel="Search"
-                        // TODO: add subfields to improve search results
-                        dataField={['title', 'body_html', 'vendor']}
+                        dataField={
+                            ['title', 'body_html', 'vendor'] // TODO: add subfields to improve search results
+                        }
                         placeholder="Search for products..."
                         iconPosition="right"
                         css={{ marginBottom: 20 }}
@@ -96,19 +176,18 @@ class Search extends Component {
                                     parsedSuggestions={parsedSuggestions}
                                     themeConfig={theme}
                                     currency={currency}
+                                    popularSearches={popularSearches}
                                 />
                             )
                         }
                         {...search}
-                        categoryField="product_type.keyword" // batteries is messing up category field
+                        categoryField="product_type.keyword"
                     />
                     <div
                         css={{
                             display: 'grid',
                             gridTemplateColumns: '300px 1fr',
-                            [mediaMax.medium]: {
-                                gridTemplateColumns: '1fr',
-                            },
+                            [mediaMax.medium]: { gridTemplateColumns: '1fr' },
                             gridGap: 20,
                         }}
                     >
@@ -119,19 +198,48 @@ class Search extends Component {
                                     'repeat(auto-fit, minmax(250px, 1fr))',
                                 gridGap: 20,
                                 alignSelf: 'start',
+                                [mediaMax.medium]: {
+                                    display: toggleFilters ? 'grid' : 'none',
+                                    gridTemplateColumns: '1fr',
+                                },
                             }}
                         >
                             {otherComponents.map(listComponent => (
-                                <MultiList
-                                    key={listComponent}
-                                    componentId={listComponent}
-                                    {...preferences[listComponent]}
-                                    dataField={`${
-                                        preferences[listComponent].dataField
-                                    }.keyword`}
-                                />
+                                <Collapse key={listComponent}>
+                                    <Panel
+                                        header={
+                                            <span
+                                                css={{
+                                                    color:
+                                                        theme.colors.titleColor,
+                                                }}
+                                            >
+                                                {preferences[listComponent]
+                                                    .title || 'Select Item'}
+                                            </span>
+                                        }
+                                        css={this.getFontFamily()}
+                                    >
+                                        <MultiList
+                                            key={listComponent}
+                                            componentId={listComponent}
+                                            {...this.getMultiListProps(
+                                                preferences[listComponent],
+                                            )}
+                                            className={labelStyles(
+                                                theme.colors.textColor,
+                                            )}
+                                            dataField={`${
+                                                preferences[listComponent]
+                                                    .dataField
+                                            }.keyword`}
+                                            css={this.getFontFamily()}
+                                        />
+                                    </Panel>
+                                </Collapse>
                             ))}
                         </div>
+
                         <div>
                             <SelectedFilters />
                             <ReactiveList
@@ -167,9 +275,13 @@ class Search extends Component {
                                                     />
                                                 )
                                             }
+                                            css={this.getFontFamily()}
                                         >
                                             <Meta
                                                 title={title}
+                                                className={cardStyles({
+                                                    ...theme.colors,
+                                                })}
                                                 description={strip(body_html)}
                                             />
                                             <div
@@ -177,6 +289,8 @@ class Search extends Component {
                                                     fontWeight: 500,
                                                     fontSize: '1.1rem',
                                                     marginTop: 10,
+                                                    color:
+                                                        theme.colors.titleColor,
                                                 }}
                                             >
                                                 {variants &&
@@ -187,9 +301,7 @@ class Search extends Component {
                                         </Card>
                                     </a>
                                 )}
-                                react={{
-                                    and: ['search', ...otherComponents],
-                                }}
+                                react={{ and: ['search', ...otherComponents] }}
                                 pagination
                                 size={9}
                                 innerClass={{
@@ -201,6 +313,9 @@ class Search extends Component {
                                         [mediaMax.medium]: {
                                             gridTemplateColumns:
                                                 'repeat(auto-fit, minmax(200px, 1fr))',
+                                            display: toggleFilters
+                                                ? 'none'
+                                                : 'grid',
                                         },
                                         [mediaMax.small]: {
                                             gridTemplateColumns:
@@ -216,6 +331,11 @@ class Search extends Component {
                                             fontWeight: 500,
                                             textAlign: 'right',
                                         },
+                                        [mediaMax.medium]: {
+                                            display: toggleFilters
+                                                ? 'none'
+                                                : 'grid',
+                                        },
                                     }),
                                     poweredBy: css({
                                         margin: 15,
@@ -224,6 +344,13 @@ class Search extends Component {
                                         display: 'flex',
                                         justifyContent: 'center',
                                         padding: '25px 0',
+                                    }),
+                                    pagination: css({
+                                        [mediaMax.medium]: {
+                                            display: toggleFilters
+                                                ? 'none'
+                                                : 'block',
+                                        },
                                     }),
                                 }}
                                 {...result}

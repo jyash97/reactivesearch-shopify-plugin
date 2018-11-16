@@ -1,9 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
+import { Helmet } from 'react-helmet';
 import { Button, Modal, Icon } from 'antd';
 import { accapi } from './constants';
 
 import Search from './components/Search';
+
+window.APPNAME = 'shopify-plugin-myplugin';
+window.CREDENTIALS = 'MFyWfzzW3:00e6fd64-dad7-4290-80e8-4e883f3d7e06';
 
 const appname = window.APPNAME;
 const credentials = window.CREDENTIALS;
@@ -70,8 +74,25 @@ class App extends Component {
     render() {
         const { isOpen, theme } = this.state;
         const isValid = appname && credentials;
+        let fontFamilyLink = '';
+        if (
+            theme.typography &&
+            theme.typography.fontFamily &&
+            theme.typography.fontFamily !== 'default'
+        ) {
+            const parsedFontFamily = theme.typography.fontFamily
+                .split(' ')
+                .join('+');
+            fontFamilyLink = (
+                <link
+                    href={`https://fonts.googleapis.com/css?family=${parsedFontFamily}`}
+                    rel="stylesheet"
+                />
+            );
+        }
         return (
             <Fragment>
+                {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
                 <Button
                     className={getButtonClass(theme)}
                     shape="circle"
