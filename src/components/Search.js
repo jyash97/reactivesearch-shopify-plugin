@@ -73,6 +73,7 @@ class Search extends Component {
                     <CategorySearch
                         componentId="search"
                         filterLabel="Search"
+                        // TODO: add subfields to improve search results
                         dataField={['title', 'body_html', 'vendor']}
                         placeholder="Search for products..."
                         iconPosition="right"
@@ -125,6 +126,9 @@ class Search extends Component {
                                     key={listComponent}
                                     componentId={listComponent}
                                     {...preferences[listComponent]}
+                                    dataField={`${
+                                        preferences[listComponent].dataField
+                                    }.keyword`}
                                 />
                             ))}
                         </div>
