@@ -19,12 +19,18 @@ const { Meta } = Card;
 const { Panel } = Collapse;
 
 const labelStyles = textColor => css`
-    ul li > label > span {
-        width: 80%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    p {
         color: ${textColor};
+        margin: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .count {
+        font-weight: bold;
     }
 `;
 
@@ -64,10 +70,14 @@ class Search extends Component {
                     },
                 },
             ).then(res => res.json());
+            let topPopularSearches = popularSearches.sort(item => item.count);
+            if (topPopularSearches.length > 5) {
+                topPopularSearches = topPopularSearches.slice(0, 5);
+            }
             this.setState({
                 preferences: preferences.message.default,
                 theme: preferences.message._theme,
-                popularSearches,
+                popularSearches: topPopularSearches,
                 currency: preferences.message._store
                     ? preferences.message._store.currency
                     : '',
@@ -196,28 +206,34 @@ class Search extends Component {
                                 display: 'grid',
                                 gridTemplateColumns:
                                     'repeat(auto-fit, minmax(250px, 1fr))',
-                                gridGap: 20,
+                                gridGap: 0,
                                 alignSelf: 'start',
+                                border: '1px solid #eee',
                                 [mediaMax.medium]: {
                                     display: toggleFilters ? 'grid' : 'none',
                                     gridTemplateColumns: '1fr',
                                 },
                             }}
                         >
-                            {otherComponents.map(listComponent => (
-                                <Collapse key={listComponent}>
+                            <Collapse
+                                bordered={false}
+                                defaultActiveKey={otherComponents}
+                            >
+                                {otherComponents.map(listComponent => (
                                     <Panel
                                         header={
                                             <span
                                                 css={{
                                                     color:
                                                         theme.colors.titleColor,
+                                                    fontWeight: 'bold',
                                                 }}
                                             >
                                                 {preferences[listComponent]
                                                     .title || 'Select Item'}
                                             </span>
                                         }
+                                        key={listComponent}
                                         css={this.getFontFamily()}
                                     >
                                         <MultiList
@@ -226,18 +242,27 @@ class Search extends Component {
                                             {...this.getMultiListProps(
                                                 preferences[listComponent],
                                             )}
-                                            className={labelStyles(
-                                                theme.colors.textColor,
-                                            )}
                                             dataField={`${
                                                 preferences[listComponent]
                                                     .dataField
                                             }.keyword`}
+                                            renderListItem={(label, count) => (
+                                                <div
+                                                    className={labelStyles(
+                                                        theme.colors.textColor,
+                                                    )}
+                                                >
+                                                    <p>{label}</p>
+                                                    <p className="count">
+                                                        {count}
+                                                    </p>
+                                                </div>
+                                            )}
                                             css={this.getFontFamily()}
                                         />
                                     </Panel>
-                                </Collapse>
-                            ))}
+                                ))}
+                            </Collapse>
                         </div>
 
                         <div>

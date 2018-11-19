@@ -157,59 +157,6 @@ const Suggestions = ({
                         </div>
                     </div>
                 ))}
-                {categories.slice(0, 3).map((category, index) => (
-                    <div
-                        css={{
-                            padding: 10,
-                            background:
-                                highlightedIndex ===
-                                index + parsedSuggestions.slice(0, 5).length
-                                    ? '#eee'
-                                    : 'transparent',
-                        }}
-                        key={category.key}
-                        {...getItemProps({
-                            item: {
-                                value: currentValue,
-                                category: category.key,
-                            },
-                        })}
-                    >
-                        {currentValue}{' '}
-                        <span
-                            css={{
-                                color: themeConfig.colors.primaryColor,
-                            }}
-                        >
-                            in {category.key}
-                        </span>
-                    </div>
-                ))}
-                {Boolean(currentValue.length) && (
-                    <div
-                        css={{
-                            color: themeConfig.colors.primaryColor,
-                            padding: 10,
-                            cursor: 'pointer',
-                            background:
-                                highlightedIndex ===
-                                parsedSuggestions.slice(0, 5).length +
-                                    categories.slice(0, 3).length
-                                    ? '#eee'
-                                    : 'transparent',
-                        }}
-                        {...getItemProps({
-                            item: {
-                                label: currentValue,
-                                value: currentValue,
-                            },
-                        })}
-                    >
-                        Search for {"'"}
-                        {currentValue}
-                        {"'"} in all categories
-                    </div>
-                )}
 
                 {popularSearches.length > 0 ? (
                     <h3 className={headingStyles(themeConfig.colors)}>
@@ -227,7 +174,7 @@ const Suggestions = ({
                             },
                         })}
                     >
-                        {item.key} ({item.count})
+                        {item.key}
                     </div>
                 ))}
             </div>
