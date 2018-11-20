@@ -1,7 +1,29 @@
 import React from 'react';
 import { string, object, arrayOf, func, number } from 'prop-types';
+import { css } from 'react-emotion';
 import Highlight from 'react-highlight-words';
 import strip from 'striptags';
+
+const headingStyles = ({ titleColor, primaryColor }) => css`
+    margin: 8px 0;
+    background: ${primaryColor}1a;
+    padding: 4px 10px;
+    color: ${titleColor};
+    font-weight: 500;
+`;
+
+const popularSearchStyles = ({ textColor }) => css`
+    color: textColor;
+    padding: 10px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    align-items: center;
+    transition: background ease 0.2s;
+    :hover {
+        background: #eee;
+    }
+`;
 
 const Suggestions = ({
     currentValue,
@@ -11,6 +33,7 @@ const Suggestions = ({
     parsedSuggestions,
     themeConfig,
     currency,
+    popularSearches,
 }) => (
     <div
         css={{
@@ -28,6 +51,12 @@ const Suggestions = ({
     >
         {
             <div>
+                {parsedSuggestions.length > 0 ? (
+                    <h3 className={headingStyles(themeConfig.colors)}>
+                        Products
+                    </h3>
+                ) : null}
+
                 {parsedSuggestions.slice(0, 5).map((suggestion, index) => (
                     <div
                         css={{
@@ -56,7 +85,7 @@ const Suggestions = ({
                                 <img
                                     src={suggestion.source.image.src}
                                     alt=" "
-                                    width="50px"
+                                    width="80px"
                                     css={{ marginRight: 15 }}
                                 />
                             }
@@ -65,14 +94,24 @@ const Suggestions = ({
                                     searchWords={currentValue.split(' ')}
                                     textToHighlight={suggestion.source.title}
                                     highlightStyle={{
-                                        fontWeight: 600,
+                                        fontWeight: 700,
                                         padding: 0,
+                                        background: `${
+                                            themeConfig.colors.primaryColor
+                                        }33`,
+                                        color: themeConfig.colors.titleColor,
+                                        fontSize: '1rem',
+                                    }}
+                                    unhighlightStyle={{
+                                        fontSize: '1rem',
+                                        color: themeConfig.colors.titleColor,
                                     }}
                                 />
                                 <div
                                     css={{
                                         fontSize: '0.8rem',
                                         margin: '2px 0',
+                                        color: themeConfig.colors.textColor,
                                     }}
                                 >
                                     <Highlight
@@ -91,12 +130,22 @@ const Suggestions = ({
                                         highlightStyle={{
                                             fontWeight: 600,
                                             padding: 0,
+                                            background: `${
+                                                themeConfig.colors.primaryColor
+                                            }33`,
+                                            color: themeConfig.colors.textColor,
                                         }}
                                     />
                                 </div>
                                 {suggestion.source.variants &&
                                     suggestion.source.variants[0].price && (
-                                        <div>
+                                        <div
+                                            css={{
+                                                color:
+                                                    themeConfig.colors
+                                                        .titleColor,
+                                            }}
+                                        >
                                             {currency}{' '}
                                             {
                                                 suggestion.source.variants[0]
@@ -108,59 +157,26 @@ const Suggestions = ({
                         </div>
                     </div>
                 ))}
-                {categories.slice(0, 3).map((category, index) => (
+
+                {popularSearches.length > 0 ? (
+                    <h3 className={headingStyles(themeConfig.colors)}>
+                        Popular Searches
+                    </h3>
+                ) : null}
+                {popularSearches.map(item => (
                     <div
-                        css={{
-                            padding: 10,
-                            background:
-                                highlightedIndex ===
-                                index + parsedSuggestions.slice(0, 5).length
-                                    ? '#eee'
-                                    : 'transparent',
-                        }}
-                        key={category.key}
+                        key={item.key}
+                        className={popularSearchStyles(themeConfig.colors)}
                         {...getItemProps({
                             item: {
-                                value: currentValue,
-                                category: category.key,
+                                label: item.key,
+                                value: item.key,
                             },
                         })}
                     >
-                        {currentValue}{' '}
-                        <span
-                            css={{
-                                color: themeConfig.colors.primaryColor,
-                            }}
-                        >
-                            in {category.key}
-                        </span>
+                        {item.key}
                     </div>
                 ))}
-                {Boolean(currentValue.length) && (
-                    <div
-                        css={{
-                            color: themeConfig.colors.primaryColor,
-                            padding: 10,
-                            cursor: 'pointer',
-                            background:
-                                highlightedIndex ===
-                                parsedSuggestions.slice(0, 5).length +
-                                    categories.slice(0, 3).length
-                                    ? '#eee'
-                                    : 'transparent',
-                        }}
-                        {...getItemProps({
-                            item: {
-                                label: currentValue,
-                                value: currentValue,
-                            },
-                        })}
-                    >
-                        Search for {"'"}
-                        {currentValue}
-                        {"'"} in all categories
-                    </div>
-                )}
             </div>
         }
     </div>
