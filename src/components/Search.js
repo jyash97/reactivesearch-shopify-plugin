@@ -5,11 +5,12 @@ import {
     MultiList,
     ReactiveList,
     SelectedFilters,
+    DynamicRangeSlider,
 } from '@appbaseio/reactivesearch';
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
 import { css } from 'react-emotion';
-import { Card, Spin, Collapse, Button, Tooltip } from 'antd';
+import { Card, Spin, Collapse, Button, Tooltip, message } from 'antd';
 import strip from 'striptags';
 
 import Suggestions from './Suggestions';
@@ -49,6 +50,7 @@ class Search extends Component {
         theme: {},
         currency: '',
         toggleFilters: false,
+        popularSearches: [],
     };
 
     async componentDidMount() {
@@ -62,22 +64,18 @@ class Search extends Component {
                     },
                 },
             ).then(res => res.json());
-            const { popularSearches } = await fetch(
-                `${accapi}/analytics/${appname}/popularsearches`,
-                {
-                    headers: {
-                        Authorization: `Basic ${btoa(credentials)}`,
-                    },
-                },
-            ).then(res => res.json());
-            let topPopularSearches = popularSearches.sort(item => item.count);
-            if (topPopularSearches.length > 5) {
-                topPopularSearches = topPopularSearches.slice(0, 5);
-            }
+
+            this.getPopularSearches();
+
             this.setState({
                 preferences: preferences.message.default,
                 theme: preferences.message._theme,
-                popularSearches: topPopularSearches,
+                settings: preferences.message._settings || {
+                    isFilterCollapsible: true,
+                    showPrice: true,
+                    showSelectedFilters: true,
+                    showPopularSearches: true,
+                },
                 currency: preferences.message._store
                     ? preferences.message._store.currency
                     : '',
@@ -87,6 +85,35 @@ class Search extends Component {
             console.error(error);
         }
     }
+
+    getPopularSearches = async () => {
+        let topPopularSearches = [];
+        try {
+            const { appname, credentials } = this.props;
+            const response = await fetch(
+                `${accapi}/analytics/${appname}/popularsearches`,
+                {
+                    headers: {
+                        Authorization: `Basic ${btoa(credentials)}`,
+                    },
+                },
+            );
+            const { popularSearches } = await response.json();
+            if (response.status >= 400) {
+                message.error(popularSearches.message);
+            } else {
+                topPopularSearches = popularSearches.sort(item => item.count);
+                if (topPopularSearches.length > 5) {
+                    topPopularSearches = topPopularSearches.slice(0, 5);
+                }
+                this.setState({
+                    popularSearches: topPopularSearches,
+                });
+            }
+        } catch (e) {
+            console.error('Something went wrong with Popular Searches');
+        }
+    };
 
     getMultiListProps = listComponentProps => {
         const { title, ...restProps } = listComponentProps;
@@ -116,6 +143,7 @@ class Search extends Component {
             currency,
             toggleFilters,
             popularSearches,
+            settings,
         } = this.state;
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
@@ -186,6 +214,9 @@ class Search extends Component {
                                     parsedSuggestions={parsedSuggestions}
                                     themeConfig={theme}
                                     currency={currency}
+                                    showPopularSearches={
+                                        settings.showPopularSearches
+                                    }
                                     popularSearches={popularSearches}
                                 />
                             )
@@ -217,7 +248,11 @@ class Search extends Component {
                         >
                             <Collapse
                                 bordered={false}
-                                defaultActiveKey={otherComponents}
+                                defaultActiveKey={
+                                    settings.isFilterCollapsible
+                                        ? []
+                                        : [...otherComponents, 'price-filter']
+                                }
                             >
                                 {otherComponents.map(listComponent => (
                                     <Panel
@@ -262,11 +297,38 @@ class Search extends Component {
                                         />
                                     </Panel>
                                 ))}
+                                {settings.showPrice ? (
+                                    <Panel
+                                        header={
+                                            <span
+                                                css={{
+                                                    color:
+                                                        theme.colors.titleColor,
+                                                    fontWeight: 'bold',
+                                                }}
+                                            >
+                                                Price
+                                            </span>
+                                        }
+                                        key="price-filter"
+                                        css={this.getFontFamily()}
+                                    >
+                                        <DynamicRangeSlider
+                                            componentId="price"
+                                            dataField="variants.price"
+                                            tooltipTrigger="hover"
+                                            css={this.getFontFamily()}
+                                        />
+                                    </Panel>
+                                ) : null}
                             </Collapse>
                         </div>
 
                         <div>
-                            <SelectedFilters />
+                            {settings.showSelectedFilters ? (
+                                <SelectedFilters />
+                            ) : null}
+
                             <ReactiveList
                                 componentId="results"
                                 dataField="title"
@@ -326,7 +388,6 @@ class Search extends Component {
                                         </Card>
                                     </a>
                                 )}
-                                react={{ and: ['search', ...otherComponents] }}
                                 pagination
                                 size={9}
                                 innerClass={{
@@ -379,6 +440,13 @@ class Search extends Component {
                                     }),
                                 }}
                                 {...result}
+                                react={{
+                                    and: [
+                                        'search',
+                                        ...otherComponents,
+                                        'price',
+                                    ],
+                                }}
                             />
                         </div>
                     </div>
