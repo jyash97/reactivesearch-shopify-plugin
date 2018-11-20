@@ -34,6 +34,7 @@ const Suggestions = ({
     themeConfig,
     currency,
     popularSearches,
+    showPopularSearches,
 }) => (
     <div
         css={{
@@ -158,25 +159,29 @@ const Suggestions = ({
                     </div>
                 ))}
 
-                {popularSearches.length > 0 ? (
+                {popularSearches.length > 0 && showPopularSearches ? (
                     <h3 className={headingStyles(themeConfig.colors)}>
                         Popular Searches
                     </h3>
                 ) : null}
-                {popularSearches.map(item => (
-                    <div
-                        key={item.key}
-                        className={popularSearchStyles(themeConfig.colors)}
-                        {...getItemProps({
-                            item: {
-                                label: item.key,
-                                value: item.key,
-                            },
-                        })}
-                    >
-                        {item.key}
-                    </div>
-                ))}
+                {showPopularSearches
+                    ? popularSearches.map(item => (
+                          <div
+                              key={item.key}
+                              className={popularSearchStyles(
+                                  themeConfig.colors,
+                              )}
+                              {...getItemProps({
+                                  item: {
+                                      label: item.key,
+                                      value: item.key,
+                                  },
+                              })}
+                          >
+                              {item.key}
+                          </div>
+                      ))
+                    : null}
             </div>
         }
     </div>
