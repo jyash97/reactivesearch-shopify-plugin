@@ -13,7 +13,7 @@ const headingStyles = ({ titleColor, primaryColor }) => css`
 `;
 
 const popularSearchStyles = ({ textColor }) => css`
-    color: textColor;
+    color: ${textColor};
     padding: 10px;
     cursor: pointer;
     margin-bottom: 4px;
