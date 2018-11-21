@@ -288,9 +288,8 @@ class Search extends Component {
                                                 preferences[listComponent],
                                             )}
                                             dataField={`${
-                                                preferences[
-                                                    listComponent
-                                                ].dataField.split('.')[0]
+                                                preferences[listComponent]
+                                                    .dataField
                                             }.keyword`}
                                             renderListItem={(label, count) => (
                                                 <div
