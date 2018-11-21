@@ -44,6 +44,16 @@ const cardStyles = ({ textColor, titleColor }) => css`
     }
 `;
 
+const cardTitleStyles = ({ titleColor, primaryColor }) => css`
+    margin: 0;
+    padding: 0;
+    color: ${titleColor};
+    mark {
+        color: ${titleColor};
+        background-color: ${primaryColor}4d};
+    }
+`;
+
 class Search extends Component {
     state = {
         preferences: null,
@@ -278,8 +288,9 @@ class Search extends Component {
                                                 preferences[listComponent],
                                             )}
                                             dataField={`${
-                                                preferences[listComponent]
-                                                    .dataField
+                                                preferences[
+                                                    listComponent
+                                                ].dataField.split('.')[0]
                                             }.keyword`}
                                             renderListItem={(label, count) => (
                                                 <div
@@ -365,7 +376,16 @@ class Search extends Component {
                                             css={this.getFontFamily()}
                                         >
                                             <Meta
-                                                title={title}
+                                                title={
+                                                    <h3
+                                                        className={cardTitleStyles(
+                                                            theme.colors,
+                                                        )}
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: title,
+                                                        }}
+                                                    />
+                                                }
                                                 className={cardStyles({
                                                     ...theme.colors,
                                                 })}
