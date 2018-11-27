@@ -19,6 +19,31 @@ import { accapi } from '../constants';
 const { Meta } = Card;
 const { Panel } = Collapse;
 
+const minimalSearchStyles = ({ titleColor }) => css`
+    input {
+        background: transparent;
+        border: 0;
+        margin-bottom: 10px;
+        color: ${titleColor};
+        box-shadow: 0px 0px 4px ${titleColor}1a;
+    }
+`;
+
+const paginationStyle = toggleFilters => css`
+    a{
+        border-radius: 2px;
+    }
+    a:first-child{
+        float: left;
+    }
+    a:last-child{
+        float: right;
+    }
+    [mediaMax.medium]: {
+        display: ${toggleFilters ? 'none' : 'block'}
+    },
+`;
+
 const labelStyles = textColor => css`
     width: 80%;
     display: flex;
@@ -89,6 +114,7 @@ class Search extends Component {
                 currency: preferences.message._store
                     ? preferences.message._store.currency
                     : '',
+                themeType: preferences.message._themeType || 'classic',
             });
         } catch (error) {
             // eslint-disable-next-line
@@ -145,14 +171,63 @@ class Search extends Component {
         return fontFamily ? { fontFamily } : {};
     };
 
+    renderCategorySearch = categorySearchProps => {
+        const {
+            settings,
+            popularSearches,
+            theme,
+            currency,
+            preferences,
+        } = this.state;
+        const { search } = preferences;
+        return (
+            <CategorySearch
+                componentId="search"
+                filterLabel="Search"
+                dataField={
+                    ['title', 'body_html', 'vendor'] // TODO: add subfields to improve search results
+                }
+                placeholder="Search for products..."
+                iconPosition="right"
+                css={{ marginBottom: 20 }}
+                renderSuggestions={({
+                    currentValue,
+                    categories,
+                    isOpen,
+                    getItemProps,
+                    highlightedIndex,
+                    parsedSuggestions,
+                }) =>
+                    isOpen &&
+                    Boolean(currentValue.length) && (
+                        <Suggestions
+                            currentValue={currentValue}
+                            categories={categories}
+                            getItemProps={getItemProps}
+                            highlightedIndex={highlightedIndex}
+                            parsedSuggestions={parsedSuggestions}
+                            themeConfig={theme}
+                            currency={currency}
+                            showPopularSearches={settings.showPopularSearches}
+                            popularSearches={popularSearches}
+                        />
+                    )
+                }
+                {...search}
+                {...categorySearchProps}
+                categoryField="product_type.keyword"
+            />
+        );
+    };
+
     render() {
         const { appname, credentials } = this.props;
         const {
             preferences,
             theme,
+            themeType,
             currency,
             toggleFilters,
-            popularSearches,
             settings,
         } = this.state;
         const isMobile = window.innerWidth < 768;
@@ -163,7 +238,7 @@ class Search extends Component {
                 </div>
             );
         }
-        const { search, result } = preferences;
+        const { result } = preferences;
         const otherComponents = Object.keys(preferences).filter(
             key => key !== 'search' && key !== 'result',
         );
@@ -197,43 +272,8 @@ class Search extends Component {
                 ) : null}
 
                 <div css={{ maxWidth: 1200, margin: '25px auto' }}>
-                    <CategorySearch
-                        componentId="search"
-                        filterLabel="Search"
-                        dataField={
-                            ['title', 'body_html', 'vendor'] // TODO: add subfields to improve search results
-                        }
-                        placeholder="Search for products..."
-                        iconPosition="right"
-                        css={{ marginBottom: 20 }}
-                        renderSuggestions={({
-                            currentValue,
-                            categories,
-                            isOpen,
-                            getItemProps,
-                            highlightedIndex,
-                            parsedSuggestions,
-                        }) =>
-                            isOpen &&
-                            Boolean(currentValue.length) && (
-                                <Suggestions
-                                    currentValue={currentValue}
-                                    categories={categories}
-                                    getItemProps={getItemProps}
-                                    highlightedIndex={highlightedIndex}
-                                    parsedSuggestions={parsedSuggestions}
-                                    themeConfig={theme}
-                                    currency={currency}
-                                    showPopularSearches={
-                                        settings.showPopularSearches
-                                    }
-                                    popularSearches={popularSearches}
-                                />
-                            )
-                        }
-                        {...search}
-                        categoryField="product_type.keyword"
-                    />
+                    {themeType === 'classic' && this.renderCategorySearch()}
+
                     <div
                         css={{
                             display: 'grid',
@@ -249,11 +289,18 @@ class Search extends Component {
                                     'repeat(auto-fit, minmax(250px, 1fr))',
                                 gridGap: 0,
                                 alignSelf: 'start',
-                                border: '1px solid #eee',
+                                border:
+                                    themeType === 'classic'
+                                        ? '1px solid #eee'
+                                        : 0,
                                 [mediaMax.medium]: {
                                     display: toggleFilters ? 'grid' : 'none',
                                     gridTemplateColumns: '1fr',
                                 },
+                                boxShadow:
+                                    themeType === 'minimal'
+                                        ? `0 0 4px ${theme.colors.titleColor}1a`
+                                        : 0,
                             }}
                         >
                             <Collapse
@@ -278,6 +325,7 @@ class Search extends Component {
                                                     .title || 'Select Item'}
                                             </span>
                                         }
+                                        showArrow={themeType !== 'minimal'}
                                         key={listComponent}
                                         css={this.getFontFamily()}
                                     >
@@ -298,11 +346,17 @@ class Search extends Component {
                                                     )}
                                                 >
                                                     <p>{label}</p>
-                                                    <p className="count">
-                                                        {count}
-                                                    </p>
+                                                    {themeType !==
+                                                        'minimal' && (
+                                                        <p className="count">
+                                                            {count}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             )}
+                                            showCheckbox={
+                                                themeType !== 'minimal'
+                                            }
                                             css={this.getFontFamily()}
                                         />
                                     </Panel>
@@ -320,6 +374,7 @@ class Search extends Component {
                                                 Price
                                             </span>
                                         }
+                                        showArrow={themeType !== 'minimal'}
                                         key="price-filter"
                                         css={this.getFontFamily()}
                                     >
@@ -335,7 +390,15 @@ class Search extends Component {
                         </div>
 
                         <div>
-                            {settings.showSelectedFilters ? (
+                            {themeType === 'minimal' &&
+                                this.renderCategorySearch({
+                                    className: minimalSearchStyles(
+                                        theme.colors,
+                                    ),
+                                })}
+
+                            {settings.showSelectedFilters &&
+                            themeType !== 'minimal' ? (
                                 <SelectedFilters />
                             ) : null}
 
@@ -372,7 +435,20 @@ class Search extends Component {
                                                     />
                                                 )
                                             }
-                                            css={this.getFontFamily()}
+                                            css={
+                                                (this.getFontFamily(),
+                                                themeType === 'minimal'
+                                                    ? { padding: 10 }
+                                                    : {})
+                                            }
+                                            bodyStyle={
+                                                themeType === 'minimal'
+                                                    ? {
+                                                          padding:
+                                                              '15px 10px 10px',
+                                                      }
+                                                    : {}
+                                            }
                                         >
                                             <Meta
                                                 title={
@@ -380,6 +456,14 @@ class Search extends Component {
                                                         className={cardTitleStyles(
                                                             theme.colors,
                                                         )}
+                                                        css={
+                                                            themeType ===
+                                                            'minimal'
+                                                                ? {
+                                                                      fontWeight: 600,
+                                                                  }
+                                                                : {}
+                                                        }
                                                         dangerouslySetInnerHTML={{
                                                             __html: title,
                                                         }}
@@ -388,21 +472,31 @@ class Search extends Component {
                                                 className={cardStyles({
                                                     ...theme.colors,
                                                 })}
-                                                description={strip(body_html)}
+                                                description={
+                                                    themeType === 'classic' &&
+                                                    strip(body_html)
+                                                }
                                             />
-                                            <div
-                                                css={{
-                                                    fontWeight: 500,
-                                                    fontSize: '1.1rem',
-                                                    marginTop: 10,
-                                                    color:
-                                                        theme.colors.titleColor,
-                                                }}
-                                            >
-                                                {variants &&
-                                                    `${currency} ${
-                                                        variants[0].price
-                                                    }`}
+                                            <div>
+                                                <h3
+                                                    style={{
+                                                        fontWeight: 500,
+                                                        fontSize: '1rem',
+                                                        marginTop: 6,
+                                                        color:
+                                                            themeType ===
+                                                            'minimal'
+                                                                ? theme.colors
+                                                                      .textColor
+                                                                : theme.colors
+                                                                      .titleColor,
+                                                    }}
+                                                >
+                                                    {variants &&
+                                                        `${currency} ${
+                                                            variants[0].price
+                                                        }`}
+                                                </h3>
                                             </div>
                                         </Card>
                                     </a>
@@ -450,13 +544,7 @@ class Search extends Component {
                                         justifyContent: 'center',
                                         padding: '25px 0',
                                     }),
-                                    pagination: css({
-                                        [mediaMax.medium]: {
-                                            display: toggleFilters
-                                                ? 'none'
-                                                : 'block',
-                                        },
-                                    }),
+                                    pagination: paginationStyle(toggleFilters),
                                 }}
                                 {...result}
                                 react={{
