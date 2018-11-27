@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Helmet } from 'react-helmet';
 import { Button, Modal, Icon } from 'antd';
 import { accapi } from './constants';
 
@@ -67,8 +68,25 @@ class App extends Component {
     render() {
         const { isOpen, theme } = this.state;
         const isValid = appname && credentials;
+        let fontFamilyLink = '';
+        if (
+            theme.typography &&
+            theme.typography.fontFamily &&
+            theme.typography.fontFamily !== 'default'
+        ) {
+            const parsedFontFamily = theme.typography.fontFamily
+                .split(' ')
+                .join('+');
+            fontFamilyLink = (
+                <link
+                    href={`https://fonts.googleapis.com/css?family=${parsedFontFamily}`}
+                    rel="stylesheet"
+                />
+            );
+        }
         return (
             <Fragment>
+                {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
                 <Button
                     style={getButtonClass(theme)}
                     shape="circle"
