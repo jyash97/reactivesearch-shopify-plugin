@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { css } from 'react-emotion';
 import { Button, Modal, Icon } from 'antd';
 import { accapi } from './constants';
 
@@ -20,22 +19,21 @@ if (!credentials) {
 
 const getButtonClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
-    return css({
+    return {
         borderColor: primaryColor,
         ...buttonStyle,
-    });
+    };
 };
 const getIconClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
-    return css({
+    return {
         color: primaryColor,
         ...iconStyle,
-    });
+    };
 };
 class App extends Component {
     state = {
         isOpen: false,
-        preferences: null,
         theme: {},
     };
 
@@ -51,7 +49,6 @@ class App extends Component {
                     },
                 ).then(res => res.json());
                 this.setState({
-                    preferences: preferences.message.default,
                     theme: preferences.message._theme,
                 });
             } catch (error) {
@@ -73,11 +70,11 @@ class App extends Component {
         return (
             <Fragment>
                 <Button
-                    className={getButtonClass(theme)}
+                    style={getButtonClass(theme)}
                     shape="circle"
                     onClick={this.toggleModal}
                 >
-                    <Icon className={getIconClass(theme)} type="search" />
+                    <Icon style={getIconClass(theme)} type="search" />
                 </Button>
                 {isValid &&
                     isOpen && (
