@@ -52,6 +52,7 @@ const labelStyles = textColor => css`
     p {
         color: ${textColor};
         margin: 0;
+        font-size: 15px;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
@@ -66,6 +67,15 @@ const cardStyles = ({ textColor, titleColor }) => css`
     }
     .ant-card-meta-description {
         color: ${textColor};
+    }
+`;
+
+const checkBoxStyle = css`
+    ::before {
+        border-width: 1px !important;
+    }
+    ::after {
+        border-width: 0 0 1px 1px !important;
     }
 `;
 
@@ -319,6 +329,7 @@ class Search extends Component {
                                                     color:
                                                         theme.colors.titleColor,
                                                     fontWeight: 'bold',
+                                                    fontSize: '15px',
                                                 }}
                                             >
                                                 {preferences[listComponent]
@@ -358,6 +369,9 @@ class Search extends Component {
                                                 themeType !== 'minimal'
                                             }
                                             css={this.getFontFamily()}
+                                            innerClass={{
+                                                label: checkBoxStyle,
+                                            }}
                                         />
                                     </Panel>
                                 ))}
@@ -369,6 +383,7 @@ class Search extends Component {
                                                     color:
                                                         theme.colors.titleColor,
                                                     fontWeight: 'bold',
+                                                    fontSize: '15px',
                                                 }}
                                             >
                                                 Price
@@ -383,6 +398,10 @@ class Search extends Component {
                                             dataField="variants.price"
                                             tooltipTrigger="hover"
                                             css={this.getFontFamily()}
+                                            rangeLabels={(min, max) => ({
+                                                start: `${currency}${min}`,
+                                                end: `${currency}${max}`,
+                                            })}
                                         />
                                     </Panel>
                                 ) : null}
@@ -493,7 +512,7 @@ class Search extends Component {
                                                     }}
                                                 >
                                                     {variants &&
-                                                        `${currency} ${
+                                                        `${currency}${
                                                             variants[0].price
                                                         }`}
                                                 </h3>
