@@ -5,7 +5,7 @@ import ProductSuggestions from './components/ProductSuggestions';
 const mode = window.MODE;
 
 const App = () => {
-    if (mode === 'PRODUCTS_SUGGESTIONS') {
+    if (mode === 'products_suggestions') {
         return <ProductSuggestions />;
     }
     return <SearchPlugin />;

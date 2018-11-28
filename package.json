@@ -18,6 +18,7 @@
         "react-emotion": "^9.2.6",
         "react-highlight-words": "^0.14.0",
         "react-scripts": "1.1.5",
+        "react-truncate": "^2.4.0",
         "striptags": "^2.2.1"
     },
     "devDependencies": {
