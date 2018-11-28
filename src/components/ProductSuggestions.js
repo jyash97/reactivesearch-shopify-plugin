@@ -1,18 +1,18 @@
 import React from 'react';
-import { Card, Spin, Button, Icon } from 'antd';
-import Truncate from 'react-truncate';
-import strip from 'striptags';
+import { Spin, Button, Icon } from 'antd';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { css } from 'react-emotion';
 import { mediaMax } from '@divyanshu013/media';
 import { ReactiveBase, ReactiveList } from '@appbaseio/reactivesearch';
+import SuggestionCard from './SuggestionCard';
 import { getPreferences } from '../utils';
 
 const appname = window.APPNAME;
 const credentials = window.CREDENTIALS;
 
 const maxProductSize = 5;
-
-const { Meta } = Card;
 
 const buttonLeft = css({
     [mediaMax.small]: {
@@ -60,7 +60,7 @@ class ProductSuggestions extends React.Component {
         preferences: null,
         theme: {},
         currency: '',
-        currentPage: 1,
+        // currentPage: 1,
         maxSize: maxProductSize,
     };
 
@@ -116,25 +116,31 @@ class ProductSuggestions extends React.Component {
     };
 
     nextPage = () => {
-        this.setState(prevState => ({
-            currentPage: prevState.currentPage + 1,
-        }));
+        // this.setState(
+        //     prevState => ({
+        //         currentPage: prevState.currentPage + 1,
+        //     }),
+        //     () => {
+        //         this.slick.slickNext();
+        //     },
+        // );
+        this.slick.slickNext();
     };
 
     prevPage = () => {
-        this.setState(prevState => ({
-            currentPage: prevState.currentPage - 1,
-        }));
+        // this.setState(
+        //     prevState => ({
+        //         currentPage: prevState.currentPage - 1,
+        //     }),
+        //     () => {
+        //         this.slick.slickPrev();
+        //     },
+        // );
+        this.slick.slickPrev();
     };
 
     render() {
-        const {
-            theme,
-            currency,
-            preferences,
-            currentPage,
-            maxSize,
-        } = this.state;
+        const { theme, currency, preferences, maxSize } = this.state;
         if (!preferences) {
             return (
                 <div css={{ display: 'flex', justifyContent: 'center' }}>
@@ -146,6 +152,14 @@ class ProductSuggestions extends React.Component {
         const otherComponents = Object.keys(preferences).filter(
             key => key !== 'search' && key !== 'result',
         );
+        const settings = {
+            dots: false,
+            infinite: false,
+            speed: 500,
+            slidesToShow: maxSize,
+            slidesToScroll: maxSize,
+            initialSlide: 0,
+        };
         return (
             <ReactiveBase
                 app={appname}
@@ -155,7 +169,7 @@ class ProductSuggestions extends React.Component {
             >
                 <div css={{ margin: '25px auto', position: 'relative' }}>
                     <ReactiveList
-                        currentPage={currentPage}
+                        // currentPage={currentPage}
                         onResultStats={total => {
                             this.total = total;
                         }}
@@ -178,111 +192,60 @@ class ProductSuggestions extends React.Component {
                                 ...streamResults,
                             ];
                             return (
-                                <div
-                                    className={css({
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                    })}
-                                >
+                                <div>
                                     <Button
-                                        disabled={currentPage === 0}
                                         className={buttonLeft}
                                         onClick={this.prevPage}
                                     >
                                         <Icon className={icon} type="left" />
                                     </Button>
-                                    {resultsCalc.map(
-                                        (
-                                            {
-                                                handle,
-                                                _id,
-                                                image,
-                                                title,
-                                                body_html,
-                                                variants,
+                                    <div
+                                        className={css({
+                                            margin: '10px 50px',
+                                            [mediaMax.small]: {
+                                                margin: '10px 25px',
                                             },
-                                            index,
-                                        ) => (
-                                            <a
-                                                onClick={() => {
-                                                    triggerClickAnalytics(
-                                                        base + index,
-                                                    );
-                                                }}
-                                                href={`products/${handle}`}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                                key={_id}
-                                                className={css({
-                                                    minWidth: 240,
-                                                    maxWidth: 250,
-                                                    margin: 8,
-                                                    padding: 10,
-                                                    [mediaMax.small]: {
-                                                        minWidth: 150,
-                                                        maxWidth: 170,
-                                                        margin: 3,
-                                                        padding: 3,
+                                        })}
+                                    >
+                                        <Slider
+                                            ref={c => {
+                                                this.slick = c;
+                                            }}
+                                            {...settings}
+                                        >
+                                            {resultsCalc.map(
+                                                (
+                                                    {
+                                                        handle,
+                                                        _id,
+                                                        image,
+                                                        title,
+                                                        body_html,
+                                                        variants,
                                                     },
-                                                    [mediaMax.xsmall]: {
-                                                        minWidth: 100,
-                                                        maxWidth: 140,
-                                                        margin: 3,
-                                                        padding: 3,
-                                                    },
-                                                })}
-                                            >
-                                                <Card
-                                                    hoverable
-                                                    bordered={false}
-                                                    cover={
-                                                        image && (
-                                                            <img
-                                                                src={image.src}
-                                                                width="100%"
-                                                                alt={title}
-                                                            />
-                                                        )
-                                                    }
-                                                >
-                                                    <Meta
-                                                        title={title}
-                                                        description={
-                                                            <Truncate
-                                                                lines={3}
-                                                                ellipsis={
-                                                                    <span>
-                                                                        ...{' '}
-                                                                    </span>
-                                                                }
-                                                            >
-                                                                {strip(
-                                                                    body_html,
-                                                                )}
-                                                            </Truncate>
-                                                        }
-                                                    />
-                                                    <div
-                                                        css={{
-                                                            fontWeight: 500,
-                                                            fontSize: '1.1rem',
-                                                            marginTop: 10,
+                                                    index,
+                                                ) => (
+                                                    <SuggestionCard
+                                                        key={_id}
+                                                        {...{
+                                                            handle,
+                                                            image,
+                                                            title,
+                                                            body_html,
+                                                            variants,
+                                                            currency,
+                                                            index,
+                                                            base,
+                                                            triggerClickAnalytics,
                                                         }}
-                                                    >
-                                                        {variants &&
-                                                            `${currency} ${
-                                                                variants[0]
-                                                                    .price
-                                                            }`}
-                                                    </div>
-                                                </Card>
-                                            </a>
-                                        ),
-                                    )}
+                                                        index={_id}
+                                                    />
+                                                ),
+                                            )}
+                                        </Slider>
+                                    </div>
+
                                     <Button
-                                        disabled={
-                                            this.total <= currentPage * maxSize
-                                        }
                                         className={buttonRight}
                                         onClick={this.nextPage}
                                     >
@@ -324,7 +287,7 @@ class ProductSuggestions extends React.Component {
                             }),
                         }}
                         {...result}
-                        size={maxSize} // default 5
+                        size={15}
                     />
                 </div>
             </ReactiveBase>

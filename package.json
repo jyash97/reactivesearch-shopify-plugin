@@ -18,7 +18,9 @@
         "react-emotion": "^9.2.6",
         "react-highlight-words": "^0.14.0",
         "react-scripts": "1.1.5",
+        "react-slick": "^0.23.2",
         "react-truncate": "^2.4.0",
+        "slick-carousel": "^1.8.1",
         "striptags": "^2.2.1"
     },
     "devDependencies": {
