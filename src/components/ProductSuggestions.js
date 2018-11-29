@@ -18,14 +18,12 @@ const buttonLeft = css({
     [mediaMax.small]: {
         padding: 0,
     },
-    position: 'absolute',
     zIndex: 10,
     top: 0,
     marginTop: 100,
     left: 0,
 });
 const buttonRight = css({
-    position: 'absolute',
     zIndex: 10,
     top: 0,
     marginTop: 100,
@@ -47,6 +45,7 @@ const main = css`
         border: none !important;
         box-shadow: none;
         background: transparent !important;
+        position: absolute;
     }
 `;
 
