@@ -23,9 +23,6 @@ const buttonLeft = css({
     top: 0,
     marginTop: 100,
     left: 0,
-    border: 'none',
-    boxShadow: 'none',
-    background: 'transparent !important',
 });
 const buttonRight = css({
     position: 'absolute',
@@ -33,13 +30,16 @@ const buttonRight = css({
     top: 0,
     marginTop: 100,
     right: 0,
-    border: 'none',
-    boxShadow: 'none',
-    background: 'transparent !important',
     [mediaMax.small]: {
         padding: 0,
     },
 });
+
+const btnStyle = {
+    border: 'none !important',
+    boxShadow: 'none !important',
+    background: 'transparent !important',
+};
 
 const icon = css({
     fontSize: 32,
@@ -196,6 +196,7 @@ class ProductSuggestions extends React.Component {
                                     <Button
                                         className={buttonLeft}
                                         onClick={this.prevPage}
+                                        style={btnStyle}
                                     >
                                         <Icon className={icon} type="left" />
                                     </Button>
@@ -248,6 +249,7 @@ class ProductSuggestions extends React.Component {
                                     <Button
                                         className={buttonRight}
                                         onClick={this.nextPage}
+                                        style={btnStyle}
                                     >
                                         <Icon className={icon} type="right" />
                                     </Button>
