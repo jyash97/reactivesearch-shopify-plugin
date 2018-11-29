@@ -35,18 +35,20 @@ const buttonRight = css({
     },
 });
 
-const btnStyle = {
-    border: 'none !important',
-    boxShadow: 'none !important',
-    background: 'transparent !important',
-};
-
 const icon = css({
     fontSize: 32,
     [mediaMax.small]: {
         fontSize: 25,
     },
 });
+
+const main = css`
+    .ant-btn {
+        border: none !important;
+        box-shadow: none;
+        background: transparent !important;
+    }
+`;
 
 if (!appname) {
     console.warn('APPNAME not available'); // eslint-disable-line
@@ -192,11 +194,10 @@ class ProductSuggestions extends React.Component {
                                 ...streamResults,
                             ];
                             return (
-                                <div>
+                                <div css={main}>
                                     <Button
                                         className={buttonLeft}
                                         onClick={this.prevPage}
-                                        style={btnStyle}
                                     >
                                         <Icon className={icon} type="left" />
                                     </Button>
@@ -249,7 +250,6 @@ class ProductSuggestions extends React.Component {
                                     <Button
                                         className={buttonRight}
                                         onClick={this.nextPage}
-                                        style={btnStyle}
                                     >
                                         <Icon className={icon} type="right" />
                                     </Button>
