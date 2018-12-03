@@ -21,14 +21,14 @@ if (!credentials) {
 const getButtonClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
     return css({
-        borderColor: primaryColor,
+        borderColor: `${primaryColor} !important`,
         ...buttonStyle,
     });
 };
 const getIconClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
     return css({
-        color: primaryColor,
+        color: `${primaryColor} !important`,
         ...iconStyle,
     });
 };
