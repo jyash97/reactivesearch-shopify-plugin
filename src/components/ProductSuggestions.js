@@ -281,7 +281,7 @@ class ProductSuggestions extends React.Component {
                             noResults: css({
                                 display: 'flex',
                                 justifyContent: 'center',
-                                padding: '25px 0',
+                                padding: '100px 0',
                             }),
                             resultsInfo: css({
                                 display: 'none',
