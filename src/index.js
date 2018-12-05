@@ -11,6 +11,7 @@ const getPropsById = id => {
     if (container) {
         return {
             isOpen: container.getAttribute('isOpen'),
+            openWithModal: container.getAttribute('openWithModal'),
         };
     }
     return null;

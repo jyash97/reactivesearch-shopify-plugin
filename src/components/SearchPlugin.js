@@ -39,7 +39,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: props.isOpen === 'true',
+            isOpen: Boolean(props.isOpen),
             theme: {},
         };
     }
@@ -66,7 +66,12 @@ class App extends Component {
 
     render() {
         const { isOpen, theme } = this.state;
+        const { openWithModal } = this.props;
         const isValid = appname && credentials;
+        const isOpenWithModal = Boolean(openWithModal);
+        if (isOpenWithModal) {
+            return <Search appname={appname} credentials={credentials} />;
+        }
         return (
             <Fragment>
                 <Button
@@ -91,5 +96,8 @@ class App extends Component {
         );
     }
 }
-
+App.defaultProps = {
+    openWithModal: 'true',
+    isOpen: 'false', // if true, then modal will be in open state
+};
 export default App;
