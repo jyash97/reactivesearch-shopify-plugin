@@ -22,6 +22,9 @@ const getButtonClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
     return css({
         borderColor: `${primaryColor} !important`,
+        backgroundColor: 'transparent !important',
+        marginLeft: 3,
+        marginRight: 3,
         ...buttonStyle,
     });
 };
