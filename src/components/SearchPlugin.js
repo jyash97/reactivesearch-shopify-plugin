@@ -36,10 +36,13 @@ const getIconClass = theme => {
     });
 };
 class App extends Component {
-    state = {
-        isOpen: false,
-        theme: {},
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            isOpen: props.isOpen === 'true',
+            theme: {},
+        };
+    }
 
     async componentDidMount() {
         if (appname && credentials) {
