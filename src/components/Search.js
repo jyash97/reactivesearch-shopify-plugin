@@ -243,7 +243,13 @@ class Search extends Component {
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
             return (
-                <div css={{ display: 'flex', justifyContent: 'center' }}>
+                <div
+                    css={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        minHeight: 250,
+                    }}
+                >
                     <Spin size="large" />
                 </div>
             );
