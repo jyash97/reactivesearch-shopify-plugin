@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spin, Button, Icon } from 'antd';
+import { Button, Icon } from 'antd';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -8,6 +8,7 @@ import { mediaMax } from '@divyanshu013/media';
 import { ReactiveBase, ReactiveList } from '@appbaseio/reactivesearch';
 import SuggestionCard from './SuggestionCard';
 import { getPreferences } from '../utils';
+import Loader from './Loader';
 
 const appname = window.APPNAME;
 const credentials = window.CREDENTIALS;
@@ -143,11 +144,7 @@ class ProductSuggestions extends React.Component {
     render() {
         const { theme, currency, preferences, maxSize } = this.state;
         if (!preferences) {
-            return (
-                <div css={{ display: 'flex', justifyContent: 'center' }}>
-                    <Spin size="large" />
-                </div>
-            );
+            return <Loader />;
         }
         const { result } = preferences;
         const otherComponents = Object.keys(preferences).filter(

@@ -10,11 +10,12 @@ import {
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
 import { css } from 'react-emotion';
-import { Card, Spin, Collapse, Button, Tooltip, message } from 'antd';
+import { Card, Collapse, Button, Tooltip, message } from 'antd';
 import strip from 'striptags';
 
 import Suggestions from './Suggestions';
 import { accapi } from '../constants';
+import Loader from './Loader';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -23,7 +24,6 @@ const minimalSearchStyles = ({ titleColor }) => css`
     input {
         background: transparent;
         border: 0;
-        margin-bottom: 10px;
         color: ${titleColor};
         box-shadow: 0px 0px 4px ${titleColor}1a;
     }
@@ -242,17 +242,7 @@ class Search extends Component {
         } = this.state;
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
-            return (
-                <div
-                    css={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        minHeight: 250,
-                    }}
-                >
-                    <Spin size="large" />
-                </div>
-            );
+            return <Loader />;
         }
         const { result } = preferences;
         const otherComponents = Object.keys(preferences).filter(

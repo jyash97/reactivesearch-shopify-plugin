@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { Button, Modal, Icon } from 'antd';
+import PropTypes from 'prop-types';
 import { getPreferences } from '../utils';
 
 import Search from './Search';
@@ -99,5 +100,9 @@ class App extends Component {
 App.defaultProps = {
     openWithModal: 'true',
     isOpen: 'false', // if true, then modal will be in open state
+};
+App.propTypes = {
+    openWithModal: PropTypes.string,
+    isOpen: PropTypes.string,
 };
 export default App;
