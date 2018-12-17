@@ -420,6 +420,11 @@ class Search extends Component {
                             <ReactiveList
                                 componentId="results"
                                 dataField="title"
+                                defaultQuery={() => ({
+                                    term: {
+                                        _type: 'products',
+                                    },
+                                })}
                                 onData={(
                                     {
                                         _id,

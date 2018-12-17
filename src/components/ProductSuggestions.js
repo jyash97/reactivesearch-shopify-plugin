@@ -168,6 +168,11 @@ class ProductSuggestions extends React.Component {
                 <div css={{ margin: '25px auto', position: 'relative' }}>
                     <ReactiveList
                         // currentPage={currentPage}
+                        defaultQuery={() => ({
+                            term: {
+                                _type: 'products',
+                            },
+                        })}
                         onResultStats={total => {
                             this.total = total;
                         }}
