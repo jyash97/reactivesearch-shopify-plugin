@@ -19,6 +19,14 @@ if (!credentials) {
     console.warn('CREDENTIALS not available'); // eslint-disable-line
 }
 
+const modalStyles = css`
+    top: 0;
+    height: 100vh;
+    @media (max-width: 768px) {
+        margin: 0;
+    }
+`;
+
 const getButtonClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
     return css({
@@ -88,7 +96,7 @@ class App extends Component {
                         onCancel={this.toggleModal}
                         footer={null}
                         width="100%"
-                        css={{ top: 0, height: '100vh' }}
+                        className={modalStyles}
                     >
                         <Search appname={appname} credentials={credentials} />
                     </Modal>
