@@ -10,8 +10,9 @@ import {
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
 import { css } from 'react-emotion';
-import { Card, Collapse, Button, Tooltip, message } from 'antd';
+import { Card, Collapse, Button, Icon, message, Affix } from 'antd';
 import strip from 'striptags';
+import Truncate from 'react-truncate';
 
 import Suggestions from './Suggestions';
 import { accapi } from '../constants';
@@ -30,6 +31,7 @@ const minimalSearchStyles = ({ titleColor }) => css`
 `;
 
 const paginationStyle = toggleFilters => css`
+    max-width:none;
     a{
         border-radius: 2px;
     }
@@ -39,7 +41,7 @@ const paginationStyle = toggleFilters => css`
     a:last-child{
         float: right;
     }
-    [mediaMax.medium]: {
+    @media(max-width: 768px){
         display: ${toggleFilters ? 'none' : 'block'}
     },
 `;
@@ -87,6 +89,11 @@ const cardTitleStyles = ({ titleColor, primaryColor }) => css`
         color: ${titleColor};
         background-color: ${primaryColor}4d};
     }
+`;
+
+const mobileButtonStyles = css`
+    border-radius: 0;
+    border: 0;
 `;
 
 class Search extends Component {
@@ -166,7 +173,7 @@ class Search extends Component {
         return restProps;
     };
 
-    handleSmallScreen = () => {
+    handleToggleFilter = () => {
         this.setState(({ toggleFilters }) => ({
             toggleFilters: !toggleFilters,
         }));
@@ -256,25 +263,26 @@ class Search extends Component {
                 analytics
             >
                 {isMobile ? (
-                    <Tooltip
-                        placement="leftTop"
-                        title={toggleFilters ? 'Show Results' : 'Show Filters'}
+                    <Affix
+                        css={{
+                            position: 'fixed',
+                            bottom: 0,
+                            zIndex: 4,
+                            left: 0,
+                            width: '100%',
+                        }}
                     >
                         <Button
+                            block
                             type="primary"
-                            shape="circle"
-                            icon={toggleFilters ? 'close' : 'filter'}
-                            onClick={this.handleSmallScreen}
-                            css={{
-                                display: 'none',
-                                position: 'fixed',
-                                bottom: '20px',
-                                right: '20px',
-                                zIndex: 2,
-                                [mediaMax.medium]: { display: 'inline' },
-                            }}
-                        />
-                    </Tooltip>
+                            className={mobileButtonStyles}
+                            size="large"
+                            onClick={this.handleToggleFilter}
+                        >
+                            <Icon type={toggleFilters ? 'list' : 'filter'} />
+                            {toggleFilters ? 'Show Results' : 'Show Filters'}
+                        </Button>
+                    </Affix>
                 ) : null}
 
                 <div css={{ maxWidth: 1200, margin: '25px auto' }}>
@@ -292,7 +300,7 @@ class Search extends Component {
                             css={{
                                 display: 'grid',
                                 gridTemplateColumns:
-                                    'repeat(auto-fit, minmax(250px, 1fr))',
+                                    'repeat(auto-fit, minmax (250px, 1fr))',
                                 gridGap: 0,
                                 alignSelf: 'start',
                                 border:
@@ -421,9 +429,7 @@ class Search extends Component {
                                 componentId="results"
                                 dataField="title"
                                 defaultQuery={() => ({
-                                    term: {
-                                        _type: 'products',
-                                    },
+                                    term: { _type: 'products' },
                                 })}
                                 onData={(
                                     {
@@ -493,8 +499,16 @@ class Search extends Component {
                                                     ...theme.colors,
                                                 })}
                                                 description={
-                                                    themeType === 'classic' &&
-                                                    strip(body_html)
+                                                    themeType === 'classic' && (
+                                                        <Truncate
+                                                            lines={3}
+                                                            ellipsis={
+                                                                <span>...</span>
+                                                            }
+                                                        >
+                                                            {strip(body_html)}
+                                                        </Truncate>
+                                                    )
                                                 }
                                             />
                                             <div>
