@@ -15,29 +15,32 @@
   resolved "https://registry.npmjs.org/@ant-design/icons/-/icons-1.1.15.tgz#2ff689b87bb160c246a07adaa99cdb1c8dfd4412"
   integrity sha512-KwU8axLdaUGrhueLoiQm70ViP6jaYZVRohBxW5l8NTsmvp8Uj7iAlsVx+h0lpIcMzrsbEed4YX5QGLzlwHVbNw==
 
-"@appbaseio/reactivecore@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/@appbaseio/reactivecore/-/reactivecore-7.0.0.tgz#8e9f7e7a1d65fae89756de06bc03a6eae312c350"
-  integrity sha512-g7jWdY4gzwNFnG/p87mCteKVpZGX7yjBCJ4C6aRWpz7dw1DeJ5B2jSJzxoVofzToOPSpd9EUh3vRN4lvS7lRjw==
+"@appbaseio/reactivecore@^7.3.0":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@appbaseio/reactivecore/-/reactivecore-7.3.1.tgz#53fa7a23b95a7effa3e0646d8f8403f61d9e7786"
+  integrity sha512-EpZ6UrMpPaCh4htiCMBAydzddteUf6A6iuzgWGczBPW3GUfnAFEHBMX9kVqn5wAB0GNgxzEnE8RkzLdR4PIEYw==
   dependencies:
     prop-types "^15.6.0"
     redux "^4.0.0"
     redux-thunk "^2.3.0"
 
-"@appbaseio/reactivesearch@^2.14.1":
-  version "2.14.1"
-  resolved "https://registry.npmjs.org/@appbaseio/reactivesearch/-/reactivesearch-2.14.1.tgz#8db4ba70ff65a9c38bebd647e981f9dcd2d71226"
-  integrity sha512-6wmEW3iLIEIgtonF3/yrv3sY2/bh/fPlZ+2x+ta4kG6YvIM5ErSt94Mrs4gTLpbgQm+zDTpmeSdS5Y9OT/feFw==
+"@appbaseio/reactivesearch@^3.0.0-alpha.10":
+  version "3.0.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@appbaseio/reactivesearch/-/reactivesearch-3.0.0-alpha.10.tgz#c342eb527b1139cd40634e7bb03e3cf12a0b564d"
+  integrity sha512-jkEVA9ww34LLhZIFjPV6XvfY9OpFiL26XBopUsCuXnjAg+C4iYxBUt9YGt9UIK8n7GaVEzbLctEeN/OnYFQkvQ==
   dependencies:
-    "@appbaseio/reactivecore" "^7.0.0"
-    appbase-js "^4.0.2-beta.3"
+    "@appbaseio/reactivecore" "^7.3.0"
+    appbase-js "^4.0.2-beta.04"
+    cross-env "^5.2.0"
     downshift "^1.31.2"
     emotion "^9.0.0"
     emotion-theming "^9.0.0"
+    hoist-non-react-statics "^3.2.1"
     polished "^1.9.3"
     prop-types "^15.6.0"
     react-day-picker "^7.0.5"
     react-emotion "^9.0.0"
+    react-highlight-words "^0.14.0"
     react-redux "^5.0.7"
     rheostat "^2.1.1"
     url-search-params "^0.10.0"
@@ -384,17 +387,17 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-appbase-js@^4.0.2-beta.3:
-  version "4.0.2-beta.3"
-  resolved "https://registry.npmjs.org/appbase-js/-/appbase-js-4.0.2-beta.3.tgz#10c20ab03a8d66d732c0a2cd529923b6e579dddc"
-  integrity sha512-RvnETkjjRuevsixB8INNZxpzHP/pGq5xm9F+zJ5lMwaR0TqHtMkH7guEF4qnD11uPfKsalf9uqJk3qMTenLemw==
+appbase-js@^4.0.2-beta.04:
+  version "4.0.2-beta.4"
+  resolved "https://registry.yarnpkg.com/appbase-js/-/appbase-js-4.0.2-beta.4.tgz#59bcba7265d3f7937f8d3b1cfecb1973f5d059c8"
+  integrity sha512-yfljZF2WA4qjAEd1tqOXL49bQSGcnC8DWuDJJU3/DBgS7WB+vFeYPlk7Q+JANFx9+XCT3RXja68gu1Ic0jJWlg==
   dependencies:
     cross-fetch "^2.2.2"
     json-stable-stringify "^1.0.1"
     querystring "^0.2.0"
     stream "^0.0.2"
     url-parser-lite "^0.1.0"
-    ws "^2.2.0"
+    ws "^6.1.2"
 
 append-transform@^0.4.0:
   version "0.4.0"
@@ -588,6 +591,11 @@ async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
   integrity sha1-GdOGodntxufByF04iu28xW0zYC0=
+
+async-limiter@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
+  integrity sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
 
 async-validator@~1.8.5:
   version "1.8.5"
@@ -2327,6 +2335,14 @@ create-react-context@0.2.3:
   dependencies:
     fbjs "^0.8.0"
     gud "^1.0.0"
+
+cross-env@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.0.tgz#6ecd4c015d5773e614039ee529076669b9d126f2"
+  integrity sha512-jtdNFfFW1hB7sMhr/H6rW1Z45LFqyI431m3qU6bFXcQ3Eh7LtBuG3h74o7ohHZ3crrRkkqHlo4jYHFPcjroANg==
+  dependencies:
+    cross-spawn "^6.0.5"
+    is-windows "^1.0.0"
 
 cross-fetch@^2.2.2:
   version "2.2.3"
@@ -4278,6 +4294,13 @@ hoist-non-react-statics@^3.1.0:
   dependencies:
     react-is "^16.3.2"
 
+hoist-non-react-statics@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.2.1.tgz#c09c0555c84b38a7ede6912b61efddafd6e75e1e"
+  integrity sha512-TFsu3TV3YLY+zFTZDrN8L2DTFanObwmBLpWvJs1qfUuEQ5bTAdFcwfx2T/bsCXfM9QHSLvjfP+nihEl0yvozxw==
+  dependencies:
+    react-is "^16.3.2"
+
 home-or-tmp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/home-or-tmp/-/home-or-tmp-2.0.0.tgz#e36c3f2d2cae7d746a857e38d18d5f32a7882db8"
@@ -4930,7 +4953,7 @@ is-utf8@^0.2.0:
   resolved "https://registry.npmjs.org/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
   integrity sha1-Sw2hRCEE0bM2NA6AeX6GXPOffXI=
 
-is-windows@^1.0.1, is-windows@^1.0.2:
+is-windows@^1.0.0, is-windows@^1.0.1, is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
   integrity sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==
@@ -8264,11 +8287,6 @@ safe-buffer@5.1.2, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, s
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
 
-safe-buffer@~5.0.1:
-  version "5.0.1"
-  resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
-  integrity sha1-0mPKVGls2KMGtcplUekt5XkY++c=
-
 safe-regex@^1.1.0:
   version "1.1.0"
   resolved "http://registry.npmjs.org/safe-regex/-/safe-regex-1.1.0.tgz#40a3669f3b077d1e943d44629e157dd48023bf2e"
@@ -9191,11 +9209,6 @@ uglifyjs-webpack-plugin@^0.4.6:
     uglify-js "^2.8.29"
     webpack-sources "^1.0.1"
 
-ultron@~1.1.0:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/ultron/-/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
-  integrity sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
-
 union-value@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/union-value/-/union-value-1.0.0.tgz#5c71c34cb5bad5dcebe3ea0cd08207ba5aa1aea4"
@@ -9686,13 +9699,12 @@ write@^0.2.1:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@^2.2.0:
-  version "2.3.1"
-  resolved "https://registry.npmjs.org/ws/-/ws-2.3.1.tgz#6b94b3e447cb6a363f785eaf94af6359e8e81c80"
-  integrity sha1-a5Sz5EfLajY/eF6vlK9jWejoHIA=
+ws@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-6.1.2.tgz#3cc7462e98792f0ac679424148903ded3b9c3ad8"
+  integrity sha512-rfUqzvz0WxmSXtJpPMX2EeASXabOrSMk1ruMOV3JBTBjo4ac2lDjGGsbQSyxj8Odhw5fBib8ZKEjDNvgouNKYw==
   dependencies:
-    safe-buffer "~5.0.1"
-    ultron "~1.1.0"
+    async-limiter "~1.0.0"
 
 xdate@^0.8.2:
   version "0.8.2"

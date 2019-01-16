@@ -166,24 +166,21 @@ class ProductSuggestions extends React.Component {
                 analytics
             >
                 <div css={{ margin: '25px auto', position: 'relative' }}>
-                    <ReactiveList
-                        // currentPage={currentPage}
+                    <ReactiveList // currentPage={currentPage}
                         defaultQuery={() => ({
-                            term: {
-                                _type: 'products',
-                            },
+                            query: { term: { _type: 'products' } },
                         })}
                         onResultStats={total => {
                             this.total = total;
                         }}
-                        onAllData={(
+                        renderAllData={({
                             results,
                             streamResults,
-                            loadMoreData,
-                            { triggerClickAnalytics, base },
-                        ) => {
+                            loadMore,
+                            base,
+                            triggerClickAnalytics,
+                        }) => {
                             let filteredResults = results;
-
                             if (streamResults.length) {
                                 const ids = streamResults.map(item => item._id);
                                 filteredResults = filteredResults.filter(
@@ -259,9 +256,7 @@ class ProductSuggestions extends React.Component {
                         }}
                         componentId="results"
                         dataField="title"
-                        react={{
-                            and: ['search', ...otherComponents],
-                        }}
+                        react={{ and: ['search', ...otherComponents] }}
                         innerClass={{
                             list: css({
                                 display: 'grid',
