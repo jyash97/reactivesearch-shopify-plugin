@@ -6,6 +6,9 @@ import { getPreferences } from '../utils';
 
 import Search from './Search';
 
+window.APPNAME = 'shopify-plugin-myplugin';
+window.CREDENTIALS = 'MFyWfzzW3:00e6fd64-dad7-4290-80e8-4e883f3d7e06';
+
 const appname = window.APPNAME;
 const credentials = window.CREDENTIALS;
 const buttonStyle = window.REACTIVESEARCH_SEARCH_BUTTON_STYLE;
