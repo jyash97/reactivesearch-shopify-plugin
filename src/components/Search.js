@@ -72,15 +72,6 @@ const cardStyles = ({ textColor, titleColor }) => css`
     }
 `;
 
-const checkBoxStyle = css`
-    ::before {
-        border-width: 1px !important;
-    }
-    ::after {
-        border-width: 0 0 1px 1px !important;
-    }
-`;
-
 const cardTitleStyles = ({ titleColor, primaryColor }) => css`
     margin: 0;
     padding: 0;
@@ -127,6 +118,7 @@ class Search extends Component {
                     showPrice: true,
                     showSelectedFilters: true,
                     showPopularSearches: true,
+                    showCollectionsFilter: false,
                 },
                 currency: preferences.message._store
                     ? preferences.message._store.currency
@@ -164,7 +156,7 @@ class Search extends Component {
                 });
             }
         } catch (e) {
-            console.error('Something went wrong with Popular Searches');
+            console.error('No Popular Searches');
         }
     };
 
@@ -186,6 +178,37 @@ class Search extends Component {
             fontFamily = theme.typography.fontFamily; // eslint-disable-line
         }
         return fontFamily ? { fontFamily } : {};
+    };
+
+    renderCollectionFilter = (
+        font,
+        theme = this.state.theme,
+        themeType = this.state.themeType,
+    ) => {
+        const defaultQuery = {
+            query: { type: { value: 'collections' } },
+            aggregations: {
+                collections: { terms: { field: 'title.keyword' } },
+            },
+        };
+
+        return (
+            <MultiList
+                dataField="collections"
+                componentId="collections"
+                css={font}
+                defaultQuery={() => defaultQuery}
+                renderListItem={(label, count) => (
+                    <div className={labelStyles(theme.colors.textColor)}>
+                        <p>{label}</p>
+                        {themeType !== 'minimal' && (
+                            <p className="count">{count}</p>
+                        )}
+                    </div>
+                )}
+                showCheckbox={themeType !== 'minimal'}
+            />
+        );
     };
 
     renderCategorySearch = categorySearchProps => {
@@ -373,9 +396,6 @@ class Search extends Component {
                                                 themeType !== 'minimal'
                                             }
                                             css={this.getFontFamily()}
-                                            innerClass={{
-                                                label: checkBoxStyle,
-                                            }}
                                         />
                                     </Panel>
                                 ))}
@@ -409,6 +429,29 @@ class Search extends Component {
                                         />
                                     </Panel>
                                 ) : null}
+                                {settings.showCollectionsFilter ? (
+                                    <Panel
+                                        header={
+                                            <span
+                                                css={{
+                                                    color:
+                                                        theme.colors.titleColor,
+                                                    fontWeight: 'bold',
+                                                    fontSize: '15px',
+                                                }}
+                                            >
+                                                Collections Filter
+                                            </span>
+                                        }
+                                        showArrow={themeType !== 'minimal'}
+                                        key="collections-filter"
+                                        css={this.getFontFamily()}
+                                    >
+                                        {this.renderCollectionFilter(
+                                            this.getFontFamily,
+                                        )}
+                                    </Panel>
+                                ) : null}
                             </Collapse>
                         </div>
 
@@ -429,9 +472,11 @@ class Search extends Component {
                                 componentId="results"
                                 dataField="title"
                                 defaultQuery={() => ({
-                                    term: { _type: 'products' },
+                                    query: {
+                                        term: { _type: 'products' },
+                                    },
                                 })}
-                                onData={(
+                                renderData={(
                                     {
                                         _id,
                                         title,
@@ -586,6 +631,7 @@ class Search extends Component {
                                         'search',
                                         ...otherComponents,
                                         'price',
+                                        'collections',
                                     ],
                                 }}
                             />
