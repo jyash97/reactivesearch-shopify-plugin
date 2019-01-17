@@ -23,8 +23,6 @@ const SuggestionCard = ({
                 triggerClickAnalytics(base + index);
             }}
             href={`products/${handle}`}
-            target="_blank"
-            rel="noreferrer noopener"
         >
             <Card
                 style={{

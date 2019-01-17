@@ -33,6 +33,12 @@ const buttonRight = css({
         padding: 0,
     },
 });
+const titleCls = css({
+    textAlign: 'center',
+    padding: 10,
+    fontSize: 20,
+    color: '#000',
+});
 
 const icon = css({
     fontSize: 32,
@@ -166,6 +172,7 @@ class ProductSuggestions extends React.Component {
                 analytics
             >
                 <div css={{ margin: '25px auto', position: 'relative' }}>
+                    <div css={titleCls}>You might also like</div>
                     <ReactiveList // currentPage={currentPage}
                         defaultQuery={() => ({
                             query: { term: { _type: 'products' } },
@@ -176,7 +183,6 @@ class ProductSuggestions extends React.Component {
                         renderAllData={({
                             results,
                             streamResults,
-                            loadMore,
                             base,
                             triggerClickAnalytics,
                         }) => {
