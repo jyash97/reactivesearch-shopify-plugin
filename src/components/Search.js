@@ -70,6 +70,34 @@ const mobileButtonStyles = css`
     border: 0;
 `;
 
+const checkPreferences = settingsFetched => {
+    const defaultSettings = {
+        isFilterCollapsible: true,
+        showPrice: true,
+        showSelectedFilters: true,
+        showPopularSearches: true,
+        showCollectionsFilter: false,
+    };
+
+    if (settingsFetched) {
+        const fetchedKeys = Object.keys(settingsFetched); // From preferences Endpoint
+        const defaultKeys = Object.keys(defaultSettings); // Preferences we have by default
+        if (fetchedKeys.length !== defaultKeys.length) {
+            return defaultSettings;
+        }
+        let preferencesIsEqual = true;
+        fetchedKeys.forEach(key => {
+            if (!defaultKeys.includes(key)) {
+                preferencesIsEqual = false;
+            }
+        });
+        if (preferencesIsEqual) {
+            return settingsFetched;
+        }
+    }
+    return defaultSettings;
+};
+
 class Search extends Component {
     state = {
         preferences: null,
@@ -96,13 +124,7 @@ class Search extends Component {
             this.setState({
                 preferences: preferences.message.default,
                 theme: preferences.message._theme,
-                settings: preferences.message._settings || {
-                    isFilterCollapsible: true,
-                    showPrice: true,
-                    showSelectedFilters: true,
-                    showPopularSearches: true,
-                    showCollectionsFilter: false,
-                },
+                settings: checkPreferences(preferences.message._settings),
                 currency: preferences.message._store
                     ? preferences.message._store.currency
                     : '',
