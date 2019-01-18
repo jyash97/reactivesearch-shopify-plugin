@@ -426,7 +426,7 @@ class Search extends Component {
                                                     fontSize: '15px',
                                                 }}
                                             >
-                                                Collections Filter
+                                                Collections
                                             </span>
                                         }
                                         showArrow={themeType !== 'minimal'}
