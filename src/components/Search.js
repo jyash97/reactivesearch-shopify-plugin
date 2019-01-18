@@ -46,23 +46,6 @@ const paginationStyle = toggleFilters => css`
     },
 `;
 
-const labelStyles = textColor => css`
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    p {
-        color: ${textColor};
-        margin: 0;
-        font-size: 15px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .count {
-        font-weight: bold;
-    }
-`;
-
 const cardStyles = ({ textColor, titleColor }) => css`
     .ant-card-meta-title {
         color: ${titleColor};
@@ -86,6 +69,34 @@ const mobileButtonStyles = css`
     border-radius: 0;
     border: 0;
 `;
+
+const checkPreferences = settingsFetched => {
+    const defaultSettings = {
+        isFilterCollapsible: true,
+        showPrice: true,
+        showSelectedFilters: true,
+        showPopularSearches: true,
+        showCollectionsFilter: false,
+    };
+
+    if (settingsFetched) {
+        const fetchedKeys = Object.keys(settingsFetched); // From preferences Endpoint
+        const defaultKeys = Object.keys(defaultSettings); // Preferences we have by default
+        if (fetchedKeys.length !== defaultKeys.length) {
+            return defaultSettings;
+        }
+        let preferencesIsEqual = true;
+        fetchedKeys.forEach(key => {
+            if (!defaultKeys.includes(key)) {
+                preferencesIsEqual = false;
+            }
+        });
+        if (preferencesIsEqual) {
+            return settingsFetched;
+        }
+    }
+    return defaultSettings;
+};
 
 class Search extends Component {
     state = {
@@ -113,13 +124,7 @@ class Search extends Component {
             this.setState({
                 preferences: preferences.message.default,
                 theme: preferences.message._theme,
-                settings: preferences.message._settings || {
-                    isFilterCollapsible: true,
-                    showPrice: true,
-                    showSelectedFilters: true,
-                    showPopularSearches: true,
-                    showCollectionsFilter: false,
-                },
+                settings: checkPreferences(preferences.message._settings),
                 currency: preferences.message._store
                     ? preferences.message._store.currency
                     : '',
@@ -198,14 +203,6 @@ class Search extends Component {
                 componentId="collections"
                 css={font}
                 defaultQuery={() => defaultQuery}
-                renderListItem={(label, count) => (
-                    <div className={labelStyles(theme.colors.textColor)}>
-                        <p>{label}</p>
-                        {themeType !== 'minimal' && (
-                            <p className="count">{count}</p>
-                        )}
-                    </div>
-                )}
                 showCheckbox={themeType !== 'minimal'}
             />
         );
@@ -365,7 +362,10 @@ class Search extends Component {
                                         }
                                         showArrow={themeType !== 'minimal'}
                                         key={listComponent}
-                                        css={this.getFontFamily()}
+                                        css={{
+                                            ...this.getFontFamily(),
+                                            maxWidth: '298px',
+                                        }}
                                     >
                                         <MultiList
                                             key={listComponent}
@@ -377,21 +377,7 @@ class Search extends Component {
                                                 preferences[listComponent]
                                                     .dataField
                                             }.keyword`}
-                                            renderListItem={(label, count) => (
-                                                <div
-                                                    className={labelStyles(
-                                                        theme.colors.textColor,
-                                                    )}
-                                                >
-                                                    <p>{label}</p>
-                                                    {themeType !==
-                                                        'minimal' && (
-                                                        <p className="count">
-                                                            {count}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            )}
+                                            showCount={themeType !== 'minimal'}
                                             showCheckbox={
                                                 themeType !== 'minimal'
                                             }
@@ -423,8 +409,8 @@ class Search extends Component {
                                             tooltipTrigger="hover"
                                             css={this.getFontFamily()}
                                             rangeLabels={(min, max) => ({
-                                                start: `${currency}${min}`,
-                                                end: `${currency}${max}`,
+                                                start: `${currency} ${min}`,
+                                                end: `${currency} ${max}`,
                                             })}
                                         />
                                     </Panel>
@@ -546,7 +532,7 @@ class Search extends Component {
                                                 description={
                                                     themeType === 'classic' && (
                                                         <Truncate
-                                                            lines={3}
+                                                            lines={4}
                                                             ellipsis={
                                                                 <span>...</span>
                                                             }
@@ -572,7 +558,7 @@ class Search extends Component {
                                                     }}
                                                 >
                                                     {variants &&
-                                                        `${currency}${
+                                                        `${currency} ${
                                                             variants[0].price
                                                         }`}
                                                 </h3>
