@@ -187,8 +187,8 @@ class Search extends Component {
 
     renderCollectionFilter = (
         font,
-        theme = this.state.theme,
-        themeType = this.state.themeType,
+        { theme } = this.state, // eslint-disable-line
+        { themeType } = this.state,
     ) => {
         const defaultQuery = {
             query: { type: { value: 'collections' } },
@@ -475,7 +475,7 @@ class Search extends Component {
                                 ) => (
                                     <a
                                         onClick={triggerClickAnalytics}
-                                        href={`products/${handle}`}
+                                        href={`/products/${handle}`}
                                         target="_blank"
                                         rel="noreferrer noopener"
                                         key={_id}

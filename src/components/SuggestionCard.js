@@ -22,7 +22,7 @@ const SuggestionCard = ({
             onClick={() => {
                 triggerClickAnalytics(base + index);
             }}
-            href={`products/${handle}`}
+            href={`/products/${handle}`}
         >
             <Card
                 style={{
