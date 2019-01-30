@@ -227,7 +227,7 @@ class Search extends Component {
                 placeholder="Search for products..."
                 iconPosition="right"
                 css={{ marginBottom: 20 }}
-                renderSuggestions={({
+                renderAllSuggestions={({
                     currentValue,
                     categories,
                     isOpen,
