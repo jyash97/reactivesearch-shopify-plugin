@@ -257,6 +257,20 @@ class Search extends Component {
         );
     };
 
+    showCollapseFilters = componentsIdArray => {
+        const {
+            settings: { isFilterCollapsible },
+        } = this.state;
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            return componentsIdArray;
+        }
+        if (isFilterCollapsible) {
+            return [];
+        }
+        return componentsIdArray;
+    };
+
     render() {
         const { appname, credentials } = this.props;
         const {
@@ -339,11 +353,11 @@ class Search extends Component {
                         >
                             <Collapse
                                 bordered={false}
-                                defaultActiveKey={
-                                    settings.isFilterCollapsible
-                                        ? []
-                                        : [...otherComponents, 'price-filter']
-                                }
+                                defaultActiveKey={this.showCollapseFilters([
+                                    ...otherComponents,
+                                    'price-filter',
+                                    'collections-filter',
+                                ])}
                             >
                                 {otherComponents.map(listComponent => (
                                     <Panel
@@ -364,7 +378,9 @@ class Search extends Component {
                                         key={listComponent}
                                         css={{
                                             ...this.getFontFamily(),
-                                            maxWidth: '298px',
+                                            maxWidth: isMobile
+                                                ? 'none'
+                                                : '298px',
                                         }}
                                     >
                                         <MultiList
