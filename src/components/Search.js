@@ -393,6 +393,13 @@ class Search extends Component {
                                                 preferences[listComponent]
                                                     .dataField
                                             }.keyword`}
+                                            renderItem={item => (
+                                                <span
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: item,
+                                                    }}
+                                                />
+                                            )}
                                             showCount={themeType !== 'minimal'}
                                             showCheckbox={
                                                 themeType !== 'minimal'
