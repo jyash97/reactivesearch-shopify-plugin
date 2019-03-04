@@ -15,21 +15,21 @@
   resolved "https://registry.npmjs.org/@ant-design/icons/-/icons-1.1.15.tgz#2ff689b87bb160c246a07adaa99cdb1c8dfd4412"
   integrity sha512-KwU8axLdaUGrhueLoiQm70ViP6jaYZVRohBxW5l8NTsmvp8Uj7iAlsVx+h0lpIcMzrsbEed4YX5QGLzlwHVbNw==
 
-"@appbaseio/reactivecore@^7.3.0":
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/@appbaseio/reactivecore/-/reactivecore-7.3.1.tgz#53fa7a23b95a7effa3e0646d8f8403f61d9e7786"
-  integrity sha512-EpZ6UrMpPaCh4htiCMBAydzddteUf6A6iuzgWGczBPW3GUfnAFEHBMX9kVqn5wAB0GNgxzEnE8RkzLdR4PIEYw==
+"@appbaseio/reactivecore@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@appbaseio/reactivecore/-/reactivecore-7.4.0.tgz#7d45954d9a4f344dee6ae16314f3d0e1af7ae04e"
+  integrity sha512-0UWkzbILOJyD0FFA+tWIB2FCKIbznZGXEuH3dfCm6pBX+RJPdcvH6YCpRGf4H/KpyTdc9ejJ7HDQFqjHczsXcQ==
   dependencies:
     prop-types "^15.6.0"
     redux "^4.0.0"
     redux-thunk "^2.3.0"
 
-"@appbaseio/reactivesearch@^3.0.0-alpha.10":
-  version "3.0.0-alpha.10"
-  resolved "https://registry.yarnpkg.com/@appbaseio/reactivesearch/-/reactivesearch-3.0.0-alpha.10.tgz#c342eb527b1139cd40634e7bb03e3cf12a0b564d"
-  integrity sha512-jkEVA9ww34LLhZIFjPV6XvfY9OpFiL26XBopUsCuXnjAg+C4iYxBUt9YGt9UIK8n7GaVEzbLctEeN/OnYFQkvQ==
+"@appbaseio/reactivesearch@^3.0.0-alpha.11":
+  version "3.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/@appbaseio/reactivesearch/-/reactivesearch-3.0.0-alpha.11.tgz#8752515960a172eef72cd1b544014e0dbd3dcbec"
+  integrity sha512-g5Z6KoZL68sJOOBLgdavAvzL2MbZSk7dgrUOEmYYkBdKa2YTn3lpLtDz1rsf3A3RV4lsa+yLxUHctsrly5PXzA==
   dependencies:
-    "@appbaseio/reactivecore" "^7.3.0"
+    "@appbaseio/reactivecore" "^7.4.0"
     appbase-js "^4.0.2-beta.04"
     cross-env "^5.2.0"
     downshift "^1.31.2"

@@ -82,14 +82,16 @@ const Suggestions = ({
                                 alignItems: 'center',
                             }}
                         >
-                            {
-                                <img
-                                    src={suggestion.source.image.src}
-                                    alt=" "
-                                    width="80px"
-                                    css={{ marginRight: 15 }}
-                                />
-                            }
+                            {suggestion &&
+                                suggestion.source &&
+                                suggestion.source.image && (
+                                    <img
+                                        src={suggestion.source.image.src}
+                                        alt=" "
+                                        width="80px"
+                                        css={{ marginRight: 15 }}
+                                    />
+                                )}
                             <div>
                                 <Highlight
                                     searchWords={currentValue.split(' ')}
@@ -117,17 +119,22 @@ const Suggestions = ({
                                 >
                                     <Highlight
                                         searchWords={currentValue.split(' ')}
-                                        textToHighlight={`${strip(
-                                            suggestion.source.body_html.slice(
-                                                0,
-                                                200,
-                                            ),
-                                        )}${
-                                            suggestion.source.body_html.length >
-                                            200
-                                                ? '...'
-                                                : ''
-                                        }`}
+                                        textToHighlight={
+                                            suggestion &&
+                                            suggestion.source &&
+                                            suggestion.source.body_html &&
+                                            `${strip(
+                                                suggestion.source.body_html.slice(
+                                                    0,
+                                                    200,
+                                                ),
+                                            )}${
+                                                suggestion.source.body_html
+                                                    .length > 200
+                                                    ? '...'
+                                                    : ''
+                                            }`
+                                        }
                                         highlightStyle={{
                                             fontWeight: 600,
                                             padding: 0,
