@@ -173,93 +173,77 @@ class ProductSuggestions extends React.Component {
             >
                 <div css={{ margin: '25px auto', position: 'relative' }}>
                     <div css={titleCls}>You might also like</div>
-                    <ReactiveList // currentPage={currentPage}
+                    <ReactiveList
                         defaultQuery={() => ({
                             query: { term: { _type: 'products' } },
                         })}
-                        onResultStats={total => {
-                            this.total = total;
+                        onData={({ resultStats: { numberOfResults } }) => {
+                            this.total = numberOfResults;
                         }}
-                        renderAllData={({
-                            results,
-                            streamResults,
-                            base,
-                            triggerClickAnalytics,
-                        }) => {
-                            let filteredResults = results;
-                            if (streamResults.length) {
-                                const ids = streamResults.map(item => item._id);
-                                filteredResults = filteredResults.filter(
-                                    item => !ids.includes(item._id),
-                                );
-                            }
-                            const resultsCalc = [
-                                ...filteredResults,
-                                ...streamResults,
-                            ];
-                            return (
-                                <div css={main}>
-                                    <Button
-                                        className={buttonLeft}
-                                        onClick={this.prevPage}
+                        stream
+                        render={({ data, triggerAnalytics }) => (
+                            <div css={main}>
+                                <Button
+                                    className={buttonLeft}
+                                    onClick={this.prevPage}
+                                >
+                                    <Icon className={icon} type="left" />
+                                </Button>
+                                <div
+                                    className={css({
+                                        margin: '10px 50px',
+                                        [mediaMax.small]: {
+                                            margin: '10px 25px',
+                                        },
+                                    })}
+                                >
+                                    <Slider
+                                        ref={c => {
+                                            this.slick = c;
+                                        }}
+                                        {...settings}
                                     >
-                                        <Icon className={icon} type="left" />
-                                    </Button>
-                                    <div
-                                        className={css({
-                                            margin: '10px 50px',
-                                            [mediaMax.small]: {
-                                                margin: '10px 25px',
-                                            },
-                                        })}
-                                    >
-                                        <Slider
-                                            ref={c => {
-                                                this.slick = c;
-                                            }}
-                                            {...settings}
-                                        >
-                                            {resultsCalc.map(
-                                                (
-                                                    {
+                                        {data.map(
+                                            (
+                                                {
+                                                    handle,
+                                                    _id,
+                                                    image,
+                                                    title,
+                                                    body_html,
+                                                    variants,
+                                                    _click_id,
+                                                },
+                                                index,
+                                            ) => (
+                                                <SuggestionCard
+                                                    key={_id}
+                                                    {...{
                                                         handle,
-                                                        _id,
                                                         image,
                                                         title,
                                                         body_html,
                                                         variants,
-                                                    },
-                                                    index,
-                                                ) => (
-                                                    <SuggestionCard
-                                                        key={_id}
-                                                        {...{
-                                                            handle,
-                                                            image,
-                                                            title,
-                                                            body_html,
-                                                            variants,
-                                                            currency,
-                                                            index,
-                                                            base,
-                                                            triggerClickAnalytics,
-                                                        }}
-                                                        index={_id}
-                                                    />
-                                                ),
-                                            )}
-                                        </Slider>
-                                    </div>
-
-                                    <Button
-                                        className={buttonRight}
-                                        onClick={this.nextPage}
-                                    >
-                                        <Icon className={icon} type="right" />
-                                    </Button>
+                                                        currency,
+                                                        index,
+                                                        clickId: _click_id,
+                                                        triggerAnalytics,
+                                                    }}
+                                                    index={_id}
+                                                />
+                                            ),
+                                        )}
+                                    </Slider>
                                 </div>
-                            );
-                        }}
+
+                                <Button
+                                    className={buttonRight}
+                                    onClick={this.nextPage}
+                                >
+                                    <Icon className={icon} type="right" />
+                                </Button>
+                            </div>
+                        )}
                         componentId="results"
                         dataField="title"
                         react={{ and: ['search', ...otherComponents] }}

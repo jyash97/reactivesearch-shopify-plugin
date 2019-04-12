@@ -485,7 +485,7 @@ class Search extends Component {
                                         term: { _type: 'products' },
                                     },
                                 })}
-                                renderData={(
+                                renderItem={(
                                     {
                                         _id,
                                         title,

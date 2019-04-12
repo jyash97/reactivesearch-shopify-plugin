@@ -7,8 +7,8 @@ const { Meta } = Card;
 
 const SuggestionCard = ({
     index,
-    triggerClickAnalytics,
-    base,
+    triggerAnalytics,
+    clickId,
     handle,
     image,
     title,
@@ -20,7 +20,7 @@ const SuggestionCard = ({
     <div {...props}>
         <a
             onClick={() => {
-                triggerClickAnalytics(base + index);
+                triggerAnalytics(clickId);
             }}
             href={`/products/${handle}`}
         >
