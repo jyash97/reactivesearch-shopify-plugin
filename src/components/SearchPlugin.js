@@ -29,14 +29,30 @@ const modalStyles = css`
 
 const getButtonClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
-    return css({
-        borderColor: `${primaryColor} !important`,
-        backgroundColor: 'transparent !important',
-        marginLeft: 3,
-        marginRight: 3,
-        ...buttonStyle,
-    });
+    const styles = {
+        button: {
+            borderColor: `${primaryColor} !important`,
+            backgroundColor: 'transparent !important',
+            marginLeft: '3px',
+            marginRight: '3px',
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '44px',
+            borderRadius: '50px',
+            overflow: 'hidden',
+            boxShadow: `0 0 0 2px ${primaryColor}1a`,
+            '&:hover': {
+                width: '182px',
+                '& span': { opacity: 1 },
+            },
+            '& span': { opacity: 0 },
+        },
+    };
+
+    return css({ ...styles.button, ...buttonStyle });
 };
+
 const getIconClass = theme => {
     const primaryColor = theme && theme.colors && theme.colors.primaryColor;
     return css({
@@ -44,6 +60,14 @@ const getIconClass = theme => {
         ...iconStyle,
     });
 };
+
+const getTextClass = theme => {
+    const primaryColor = theme && theme.colors && theme.colors.primaryColor;
+    return css({
+        color: `${primaryColor} !important`,
+    });
+};
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -83,12 +107,11 @@ class App extends Component {
         }
         return (
             <Fragment>
-                <Button
-                    className={getButtonClass(theme)}
-                    shape="circle"
-                    onClick={this.toggleModal}
-                >
+                <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
                     <Icon className={getIconClass(theme)} type="search" />
+                    <span className={getTextClass(theme)}>
+                        Click here to Search
+                    </span>
                 </Button>
                 {isValid && isOpen && (
                     <Modal
