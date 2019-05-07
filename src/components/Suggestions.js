@@ -3,6 +3,7 @@ import { string, object, arrayOf, func, number } from 'prop-types';
 import { css } from 'react-emotion';
 import Highlight from 'react-highlight-words';
 import strip from 'striptags';
+import Loader from './Loader';
 
 const headingStyles = ({ titleColor, primaryColor }) => css`
     margin: 8px 0;
@@ -35,6 +36,7 @@ const Suggestions = ({
     currency,
     popularSearches,
     showPopularSearches,
+    loading,
 }) => (
     <div
         css={{
@@ -50,8 +52,15 @@ const Suggestions = ({
             zIndex: 10,
         }}
     >
-        {
+        {loading ? (
+            <Loader />
+        ) : (
             <div>
+                {parsedSuggestions.length === 0 ? (
+                    <React.Fragment>
+                        No suggestions found for <mark>{currentValue}</mark>
+                    </React.Fragment>
+                ) : null}
                 {parsedSuggestions.length > 0 ? (
                     <h3 className={headingStyles(themeConfig.colors)}>
                         Products
@@ -71,8 +80,9 @@ const Suggestions = ({
                         {...getItemProps({
                             item: {
                                 value:
-                                    suggestion.source.title || suggestion.value,
-                                source: suggestion.source,
+                                    suggestion._source.title ||
+                                    suggestion.value,
+                                source: suggestion._source,
                             },
                         })}
                     >
@@ -83,10 +93,10 @@ const Suggestions = ({
                             }}
                         >
                             {suggestion &&
-                                suggestion.source &&
-                                suggestion.source.image && (
+                                suggestion._source &&
+                                suggestion._source.image && (
                                     <img
-                                        src={suggestion.source.image.src}
+                                        src={suggestion._source.image.src}
                                         alt=" "
                                         width="80px"
                                         css={{ marginRight: 15 }}
@@ -95,7 +105,7 @@ const Suggestions = ({
                             <div>
                                 <Highlight
                                     searchWords={currentValue.split(' ')}
-                                    textToHighlight={suggestion.source.title}
+                                    textToHighlight={suggestion._source.title}
                                     highlightStyle={{
                                         fontWeight: 700,
                                         padding: 0,
@@ -121,15 +131,15 @@ const Suggestions = ({
                                         searchWords={currentValue.split(' ')}
                                         textToHighlight={
                                             suggestion &&
-                                            suggestion.source &&
-                                            suggestion.source.body_html &&
+                                            suggestion._source &&
+                                            suggestion._source.body_html &&
                                             `${strip(
-                                                suggestion.source.body_html.slice(
+                                                suggestion._source.body_html.slice(
                                                     0,
                                                     200,
                                                 ),
                                             )}${
-                                                suggestion.source.body_html
+                                                suggestion._source.body_html
                                                     .length > 200
                                                     ? '...'
                                                     : ''
@@ -145,8 +155,8 @@ const Suggestions = ({
                                         }}
                                     />
                                 </div>
-                                {suggestion.source.variants &&
-                                    suggestion.source.variants[0].price && (
+                                {suggestion._source.variants &&
+                                    suggestion._source.variants[0].price && (
                                         <div
                                             css={{
                                                 color:
@@ -156,7 +166,7 @@ const Suggestions = ({
                                         >
                                             {currency}{' '}
                                             {
-                                                suggestion.source.variants[0]
+                                                suggestion._source.variants[0]
                                                     .price
                                             }
                                         </div>
@@ -190,7 +200,7 @@ const Suggestions = ({
                       ))
                     : null}
             </div>
-        }
+        )}
     </div>
 );
 

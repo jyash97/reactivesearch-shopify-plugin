@@ -46,12 +46,47 @@ const paginationStyle = toggleFilters => css`
     },
 `;
 
-const cardStyles = ({ textColor, titleColor }) => css`
+const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
+    position: relative;
+    overflow: hidden;
+
+    .product-button {
+        top: -50%;
+        position: absolute;
+        background: ${primaryColor};
+        border: 0;
+        box-shadow: 0 2px 4px ${titleColor}33;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: all ease 0.2s;
+    }
+
+    ::before {
+        content: '';
+        width: 100%;
+        height: 0vh;
+        background: ${primaryColor}00;
+        position: absolute;
+        display: block;
+        transition: all ease 0.4s;
+    }
+
     .ant-card-meta-title {
         color: ${titleColor};
     }
     .ant-card-meta-description {
         color: ${textColor};
+    }
+
+    &:hover {
+        .product-button {
+            top: 50%;
+        }
+        ::before {
+            width: 100%;
+            height: 100vh;
+            background: ${primaryColor}1a;
+        }
     }
 `;
 
@@ -221,35 +256,52 @@ class Search extends Component {
             <CategorySearch
                 componentId="search"
                 filterLabel="Search"
-                dataField={
-                    ['title', 'body_html', 'vendor'] // TODO: add subfields to improve search results
-                }
+                dataField={[
+                    'title',
+                    'title.keyword',
+                    'title.search',
+                    'title.autosuggest',
+                    'body_html',
+                    'body_html.keyword',
+                    'body_html.autosuggest',
+                    'body_html.search',
+                    'vendor',
+                    'title.keyword',
+                    'title.search',
+                    'title.autosuggest',
+                ]}
                 placeholder="Search for products..."
                 iconPosition="right"
                 css={{ marginBottom: 20 }}
-                renderAllSuggestions={({
-                    currentValue,
+                render={({
+                    value,
                     categories,
-                    isOpen,
-                    getItemProps,
-                    highlightedIndex,
-                    parsedSuggestions,
-                }) =>
-                    isOpen &&
-                    Boolean(currentValue.length) && (
-                        <Suggestions
-                            currentValue={currentValue}
-                            categories={categories}
-                            getItemProps={getItemProps}
-                            highlightedIndex={highlightedIndex}
-                            parsedSuggestions={parsedSuggestions}
-                            themeConfig={theme}
-                            currency={currency}
-                            showPopularSearches={settings.showPopularSearches}
-                            popularSearches={popularSearches}
-                        />
-                    )
-                }
+                    rawSuggestions,
+                    downshiftProps,
+                    loading,
+                }) => {
+                    return (
+                        downshiftProps.isOpen &&
+                        Boolean(value.length) && (
+                            <Suggestions
+                                currentValue={value}
+                                categories={categories}
+                                getItemProps={downshiftProps.getItemProps}
+                                highlightedIndex={
+                                    downshiftProps.highlightedIndex
+                                }
+                                loading={loading}
+                                parsedSuggestions={rawSuggestions}
+                                themeConfig={theme}
+                                currency={currency}
+                                showPopularSearches={
+                                    settings.showPopularSearches
+                                }
+                                popularSearches={popularSearches}
+                            />
+                        )
+                    );
+                }}
                 {...search}
                 {...categorySearchProps}
                 categoryField="product_type.keyword"
@@ -481,9 +533,7 @@ class Search extends Component {
                                 componentId="results"
                                 dataField="title"
                                 defaultQuery={() => ({
-                                    query: {
-                                        term: { _type: 'products' },
-                                    },
+                                    query: { term: { _type: 'products' } },
                                 })}
                                 renderItem={(
                                     {
@@ -506,6 +556,9 @@ class Search extends Component {
                                         <Card
                                             hoverable
                                             bordered={false}
+                                            className={cardStyles({
+                                                ...theme.colors,
+                                            })}
                                             cover={
                                                 image && (
                                                     <img
@@ -549,9 +602,6 @@ class Search extends Component {
                                                         }}
                                                     />
                                                 }
-                                                className={cardStyles({
-                                                    ...theme.colors,
-                                                })}
                                                 description={
                                                     themeType === 'classic' && (
                                                         <Truncate
@@ -586,6 +636,14 @@ class Search extends Component {
                                                         }`}
                                                 </h3>
                                             </div>
+                                            <Button
+                                                type="primary"
+                                                size="large"
+                                                className="product-button"
+                                            >
+                                                <Icon type="eye" />
+                                                View Product
+                                            </Button>
                                         </Card>
                                     </a>
                                 )}
