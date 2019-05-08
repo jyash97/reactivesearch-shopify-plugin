@@ -105,6 +105,12 @@ const mobileButtonStyles = css`
     border: 0;
 `;
 
+const colorContainer = css`
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fill, 30px);
+`;
+
 const checkPreferences = settingsFetched => {
     const defaultSettings = {
         isFilterCollapsible: true,
@@ -112,6 +118,8 @@ const checkPreferences = settingsFetched => {
         showSelectedFilters: true,
         showPopularSearches: true,
         showCollectionsFilter: false,
+        showSizeFilter: false,
+        showColorFilter: false,
     };
 
     if (settingsFetched) {
@@ -158,7 +166,17 @@ class Search extends Component {
 
             this.setState({
                 preferences: preferences.message.default,
-                theme: preferences.message._theme,
+                theme: preferences.message._theme || {
+                    colors: {
+                        primaryColor: '#0B6AFF',
+                        primaryTextColor: '#fff',
+                        textColor: '#424242',
+                        titleColor: '#424242',
+                    },
+                    typography: {
+                        fontFamily: 'default',
+                    },
+                },
                 settings: checkPreferences(preferences.message._settings),
                 currency: preferences.message._store
                     ? preferences.message._store.currency
@@ -240,6 +258,92 @@ class Search extends Component {
                 defaultQuery={() => defaultQuery}
                 showCheckbox={themeType !== 'minimal'}
             />
+        );
+    };
+
+    renderColorFilter = (
+        font,
+        { theme } = this.state, // eslint-disable-line
+        { themeType } = this.state,
+    ) => {
+        return (
+            <React.Fragment>
+                <MultiList
+                    dataField="options.name.keyword"
+                    defaultValue={['color', 'Color']}
+                    componentId="colorOption"
+                    showFilter={false}
+                    style={{ display: 'none' }}
+                />
+                <MultiList
+                    dataField="options.values.keyword"
+                    componentId="color"
+                    react={{ and: ['colorOption'] }}
+                    css={font}
+                    renderNoResults={() => 'No items found!'}
+                    showCheckbox={themeType !== 'minimal'}
+                    render={({ loading, error, data, handleChange, value }) => {
+                        const values = Object.keys(value);
+                        if (loading) {
+                            return <div>Fetching Results.</div>;
+                        }
+                        if (error) {
+                            return (
+                                <div>
+                                    Something went wrong! Error details{' '}
+                                    {JSON.stringify(error)}
+                                </div>
+                            );
+                        }
+                        return (
+                            <div className={colorContainer}>
+                                {data.map(item => (
+                                    <div
+                                        onClick={() => handleChange(item.key)}
+                                        css={{
+                                            width: '100%',
+                                            height: 30,
+                                            background: item.key,
+                                            border: `2px solid ${
+                                                values &&
+                                                values.includes(item.key)
+                                                    ? theme.colors.primaryColor
+                                                    : 'transparent'
+                                            }`,
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        );
+                    }}
+                />
+            </React.Fragment>
+        );
+    };
+
+    renderSizeFilter = (
+        font,
+        { theme } = this.state, // eslint-disable-line
+        { themeType } = this.state,
+    ) => {
+        return (
+            <React.Fragment>
+                <MultiList
+                    dataField="options.name.keyword"
+                    defaultValue={['size', 'Size']}
+                    componentId="sizeOption"
+                    showFilter={false}
+                    css={{ display: 'none' }}
+                />
+                <MultiList
+                    dataField="options.values.keyword"
+                    componentId="size"
+                    react={{ and: ['sizeOption'] }}
+                    css={font}
+                    renderNoResults={() => 'No items found!'}
+                    showCheckbox={themeType !== 'minimal'}
+                />
+            </React.Fragment>
         );
     };
 
@@ -409,6 +513,8 @@ class Search extends Component {
                                     ...otherComponents,
                                     'price-filter',
                                     'collections-filter',
+                                    'color-filter',
+                                    'size-filter',
                                 ])}
                             >
                                 {otherComponents.map(listComponent => (
@@ -509,6 +615,52 @@ class Search extends Component {
                                         css={this.getFontFamily()}
                                     >
                                         {this.renderCollectionFilter(
+                                            this.getFontFamily,
+                                        )}
+                                    </Panel>
+                                ) : null}
+                                {settings.showColorFilter ? (
+                                    <Panel
+                                        header={
+                                            <span
+                                                css={{
+                                                    color:
+                                                        theme.colors.titleColor,
+                                                    fontWeight: 'bold',
+                                                    fontSize: '15px',
+                                                }}
+                                            >
+                                                Color
+                                            </span>
+                                        }
+                                        showArrow={themeType !== 'minimal'}
+                                        key="color-filter"
+                                        css={this.getFontFamily()}
+                                    >
+                                        {this.renderColorFilter(
+                                            this.getFontFamily,
+                                        )}
+                                    </Panel>
+                                ) : null}
+                                {settings.showSizeFilter ? (
+                                    <Panel
+                                        header={
+                                            <span
+                                                css={{
+                                                    color:
+                                                        theme.colors.titleColor,
+                                                    fontWeight: 'bold',
+                                                    fontSize: '15px',
+                                                }}
+                                            >
+                                                Size
+                                            </span>
+                                        }
+                                        showArrow={themeType !== 'minimal'}
+                                        key="size-filter"
+                                        css={this.getFontFamily()}
+                                    >
+                                        {this.renderSizeFilter(
                                             this.getFontFamily,
                                         )}
                                     </Panel>
@@ -699,6 +851,8 @@ class Search extends Component {
                                         ...otherComponents,
                                         'price',
                                         'collections',
+                                        'color',
+                                        'size',
                                     ],
                                 }}
                             />
