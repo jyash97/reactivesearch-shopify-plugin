@@ -17,6 +17,7 @@ import Truncate from 'react-truncate';
 import Suggestions from './Suggestions';
 import { accapi } from '../constants';
 import Loader from './Loader';
+import { browserColors } from '../utils';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -109,6 +110,7 @@ const colorContainer = css`
     display: grid;
     grid-gap: 5px;
     grid-template-columns: repeat(auto-fill, 30px);
+    justify-content: center;
 `;
 
 const checkPreferences = settingsFetched => {
@@ -119,7 +121,7 @@ const checkPreferences = settingsFetched => {
         showPopularSearches: true,
         showCollectionsFilter: false,
         showSizeFilter: false,
-        showColorFilter: false,
+        showColorFilter: true,
     };
 
     if (settingsFetched) {
@@ -280,12 +282,12 @@ class Search extends Component {
                     componentId="color"
                     react={{ and: ['colorOption'] }}
                     css={font}
-                    renderNoResults={() => 'No items found!'}
                     showCheckbox={themeType !== 'minimal'}
                     render={({ loading, error, data, handleChange, value }) => {
                         const values = Object.keys(value);
+                        const broswerStringColors = Object.keys(browserColors);
                         if (loading) {
-                            return <div>Fetching Results.</div>;
+                            return <div>Fetching Colors!</div>;
                         }
                         if (error) {
                             return (
@@ -295,24 +297,36 @@ class Search extends Component {
                                 </div>
                             );
                         }
+                        if (data.length === 0) {
+                            return 'No Colors found!';
+                        }
                         return (
                             <div className={colorContainer}>
-                                {data.map(item => (
-                                    <div
-                                        onClick={() => handleChange(item.key)}
-                                        css={{
-                                            width: '100%',
-                                            height: 30,
-                                            background: item.key,
-                                            border: `2px solid ${
-                                                values &&
-                                                values.includes(item.key)
-                                                    ? theme.colors.primaryColor
-                                                    : 'transparent'
-                                            }`,
-                                        }}
-                                    />
-                                ))}
+                                {data.map(item =>
+                                    broswerStringColors.includes(
+                                        item.key.toLowerCase(),
+                                    ) ? (
+                                        <div
+                                            key={item.key}
+                                            onClick={() =>
+                                                handleChange(item.key)
+                                            }
+                                            css={{
+                                                width: '100%',
+                                                height: 30,
+                                                background: item.key,
+                                                transition: 'all ease .2s',
+                                                border: `2px solid ${
+                                                    values &&
+                                                    values.includes(item.key)
+                                                        ? theme.colors
+                                                              .primaryColor
+                                                        : 'transparent'
+                                                }`,
+                                            }}
+                                        />
+                                    ) : null,
+                                )}
                             </div>
                         );
                     }}
