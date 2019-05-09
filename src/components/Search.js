@@ -121,7 +121,7 @@ const checkPreferences = settingsFetched => {
         showPopularSearches: true,
         showCollectionsFilter: false,
         showSizeFilter: false,
-        showColorFilter: true,
+        showColorFilter: false,
     };
 
     if (settingsFetched) {
