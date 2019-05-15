@@ -31,6 +31,11 @@ const minimalSearchStyles = ({ titleColor }) => css`
     }
 `;
 
+const loaderStyle = css`
+    margin: 10px 0;
+    position: relative;
+`;
+
 const paginationStyle = toggleFilters => css`
     max-width:none;
     a{
@@ -168,6 +173,7 @@ class Search extends Component {
 
             this.setState({
                 preferences: preferences.message.default,
+                customMessage: preferences.message.customMessage || {},
                 theme: preferences.message._theme || {
                     colors: {
                         primaryColor: '#0B6AFF',
@@ -242,7 +248,7 @@ class Search extends Component {
 
     renderCollectionFilter = (
         font,
-        { theme } = this.state, // eslint-disable-line
+        { theme, customMessage } = this.state, // eslint-disable-line
         { themeType } = this.state,
     ) => {
         const defaultQuery = {
@@ -257,6 +263,14 @@ class Search extends Component {
                 dataField="collections"
                 componentId="collections"
                 css={font}
+                renderNoResults={() => (
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                customMessage.noFilterItem || 'No items Found',
+                        }}
+                    />
+                )}
                 defaultQuery={() => defaultQuery}
                 showCheckbox={themeType !== 'minimal'}
             />
@@ -266,7 +280,7 @@ class Search extends Component {
     renderColorFilter = (
         font,
         { theme } = this.state, // eslint-disable-line
-        { themeType } = this.state,
+        { themeType, customMessage } = this.state,
     ) => {
         return (
             <React.Fragment>
@@ -287,7 +301,16 @@ class Search extends Component {
                         const values = Object.keys(value);
                         const broswerStringColors = Object.keys(browserColors);
                         if (loading) {
-                            return <div>Fetching Colors!</div>;
+                            return (
+                                <div
+                                    className={loaderStyle}
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            customMessage.fetchingFilterOptions ||
+                                            'Fetching Colors',
+                                    }}
+                                />
+                            );
                         }
                         if (error) {
                             return (
@@ -298,7 +321,15 @@ class Search extends Component {
                             );
                         }
                         if (data.length === 0) {
-                            return 'No Colors found!';
+                            return (
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            customMessage.noFilterItem ||
+                                            'No color Found',
+                                    }}
+                                />
+                            );
                         }
                         return (
                             <div className={colorContainer}>
@@ -337,7 +368,7 @@ class Search extends Component {
 
     renderSizeFilter = (
         font,
-        { theme } = this.state, // eslint-disable-line
+        { theme, customMessage } = this.state, // eslint-disable-line
         { themeType } = this.state,
     ) => {
         return (
@@ -354,7 +385,25 @@ class Search extends Component {
                     componentId="size"
                     react={{ and: ['sizeOption'] }}
                     css={font}
-                    renderNoResults={() => 'No items found!'}
+                    loader={() => (
+                        <div
+                            className={loaderStyle}
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    customMessage.fetchingFilterOptions ||
+                                    'Fetching Sizes!',
+                            }}
+                        />
+                    )}
+                    renderNoResults={() => (
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    customMessage.noFilterItem ||
+                                    'No color Found',
+                            }}
+                        />
+                    )}
                     showCheckbox={themeType !== 'minimal'}
                 />
             </React.Fragment>
@@ -368,6 +417,7 @@ class Search extends Component {
             theme,
             currency,
             preferences,
+            customMessage,
         } = this.state;
         const { search } = preferences;
         return (
@@ -404,6 +454,7 @@ class Search extends Component {
                             <Suggestions
                                 currentValue={value}
                                 categories={categories}
+                                customMessage={customMessage}
                                 getItemProps={downshiftProps.getItemProps}
                                 highlightedIndex={
                                     downshiftProps.highlightedIndex
@@ -450,6 +501,7 @@ class Search extends Component {
             currency,
             toggleFilters,
             settings,
+            customMessage,
         } = this.state;
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
@@ -572,6 +624,25 @@ class Search extends Component {
                                                     }}
                                                 />
                                             )}
+                                            loader={
+                                                <div
+                                                    className={loaderStyle}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            customMessage.fetchingFilterOptions ||
+                                                            '',
+                                                    }}
+                                                />
+                                            }
+                                            renderNoResults={() => (
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            customMessage.noFilterItem ||
+                                                            'No color Found',
+                                                    }}
+                                                />
+                                            )}
                                             showCount={themeType !== 'minimal'}
                                             showCheckbox={
                                                 themeType !== 'minimal'
@@ -603,6 +674,16 @@ class Search extends Component {
                                             dataField="variants.price"
                                             tooltipTrigger="hover"
                                             css={this.getFontFamily()}
+                                            loader={
+                                                <div
+                                                    className={loaderStyle}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            customMessage.fetchingFilterOptions ||
+                                                            '',
+                                                    }}
+                                                />
+                                            }
                                             rangeLabels={(min, max) => ({
                                                 start: `${currency} ${min}`,
                                                 end: `${currency} ${max}`,
@@ -701,6 +782,40 @@ class Search extends Component {
                                 defaultQuery={() => ({
                                     query: { term: { _type: 'products' } },
                                 })}
+                                renderNoResults={() => (
+                                    <div
+                                        css={{ textAlign: 'right' }}
+                                        dangerouslySetInnerHTML={{
+                                            __html:
+                                                customMessage.noResultItem ||
+                                                'No Results Found!',
+                                        }}
+                                    />
+                                )}
+                                renderResultStats={({
+                                    numberOfResults,
+                                    time,
+                                }) => {
+                                    if (customMessage.resultStats) {
+                                        return (
+                                            <div
+                                                css={{ textAlign: 'right' }}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: customMessage.resultStats
+                                                        .replace(
+                                                            '[count]',
+                                                            numberOfResults,
+                                                        )
+                                                        .replace(
+                                                            '[time]',
+                                                            time,
+                                                        ),
+                                                }}
+                                            />
+                                        );
+                                    }
+                                    return `${numberOfResults} found in ${time} ms`;
+                                }}
                                 renderItem={(
                                     {
                                         _id,

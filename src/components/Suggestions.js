@@ -37,6 +37,7 @@ const Suggestions = ({
     popularSearches,
     showPopularSearches,
     loading,
+    customMessage,
 }) => (
     <div
         css={{
@@ -53,14 +54,36 @@ const Suggestions = ({
         }}
     >
         {loading ? (
-            <Loader />
+            customMessage.fetchingSuggestion ? (
+                <div
+                    css={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: 'flex',
+                    }}
+                    dangerouslySetInnerHTML={{
+                        __html: customMessage.fetchingSuggestion,
+                    }}
+                />
+            ) : (
+                <Loader />
+            )
         ) : (
             <div>
-                {parsedSuggestions.length === 0 ? (
+                {!loading && parsedSuggestions.length === 0 && (
                     <React.Fragment>
-                        No suggestions found for <mark>{currentValue}</mark>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    customMessage.noSuggestion.replace(
+                                        '[term]',
+                                        currentValue,
+                                    ) ||
+                                    `No suggestions found for <mark>${currentValue}</mark>`,
+                            }}
+                        />
                     </React.Fragment>
-                ) : null}
+                )}
                 {parsedSuggestions.length > 0 ? (
                     <h3 className={headingStyles(themeConfig.colors)}>
                         Products
