@@ -37,6 +37,7 @@ const Suggestions = ({
     popularSearches,
     showPopularSearches,
     loading,
+    customSuggestions,
 }) => (
     <div
         css={{
@@ -199,6 +200,12 @@ const Suggestions = ({
                           </div>
                       ))
                     : null}
+
+                {customSuggestions ? (
+                    <div
+                        dangerouslySetInnerHTML={{ __html: customSuggestions }}
+                    />
+                ) : null}
             </div>
         )}
     </div>
