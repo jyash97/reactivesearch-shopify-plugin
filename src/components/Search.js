@@ -409,7 +409,10 @@ class Search extends Component {
                                     downshiftProps.highlightedIndex
                                 }
                                 loading={loading}
-                                parsedSuggestions={rawSuggestions}
+                                parsedSuggestions={rawSuggestions.filter(
+                                    suggestion =>
+                                        suggestion._type !== 'collections',
+                                )}
                                 themeConfig={theme}
                                 currency={currency}
                                 showPopularSearches={
