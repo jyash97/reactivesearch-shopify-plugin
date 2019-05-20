@@ -76,6 +76,7 @@ const Suggestions = ({
                                     ? '#eee'
                                     : 'transparent',
                         }}
+                        className="suggestion"
                         key={suggestion.value}
                         {...getItemProps({
                             item: {
