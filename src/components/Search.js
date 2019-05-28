@@ -699,7 +699,7 @@ class Search extends Component {
                                 componentId="results"
                                 dataField="title"
                                 defaultQuery={() => ({
-                                    query: { term: { _type: 'products' } },
+                                    query: { term: { type: 'products' } },
                                 })}
                                 renderItem={(
                                     {
