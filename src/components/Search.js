@@ -168,6 +168,7 @@ class Search extends Component {
 
             this.setState({
                 preferences: preferences.message.default,
+                customSuggestions: preferences.message.customSuggestions,
                 theme: preferences.message._theme || {
                     colors: {
                         primaryColor: '#0B6AFF',
@@ -371,6 +372,7 @@ class Search extends Component {
             theme,
             currency,
             preferences,
+            customSuggestions,
         } = this.state;
         const { search } = preferences;
         return (
@@ -425,6 +427,7 @@ class Search extends Component {
                                     settings.showPopularSearches
                                 }
                                 popularSearches={popularSearches}
+                                customSuggestions={customSuggestions}
                             />
                         )
                     );
