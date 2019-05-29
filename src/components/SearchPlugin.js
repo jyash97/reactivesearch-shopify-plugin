@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { css } from 'react-emotion';
 import { Button, Modal, Icon } from 'antd';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import { getPreferences } from '../utils';
 
 import Search from './Search';
@@ -21,6 +22,7 @@ if (!credentials) {
 
 const modalStyles = css`
     top: 0;
+    position: absolute;
     height: 100vh;
     @media (max-width: 768px) {
         margin: 0;
@@ -102,11 +104,28 @@ class App extends Component {
         const { openWithModal } = this.props;
         const isValid = appname && credentials;
         const isOpenWithModal = Boolean(openWithModal);
+        let fontFamilyLink = '';
+        if (
+            theme.typography &&
+            theme.typography.fontFamily &&
+            theme.typography.fontFamily !== 'default'
+        ) {
+            const parsedFontFamily = theme.typography.fontFamily
+                .split(' ')
+                .join('+');
+            fontFamilyLink = (
+                <link
+                    href={`https://fonts.googleapis.com/css?family=${parsedFontFamily}`}
+                    rel="stylesheet"
+                />
+            );
+        }
         if (isOpenWithModal) {
             return <Search appname={appname} credentials={credentials} />;
         }
         return (
             <Fragment>
+                {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
                 <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
                     <Icon className={getIconClass(theme)} type="search" />
                     <span className={getTextClass(theme)}>

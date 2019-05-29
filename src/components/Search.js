@@ -9,7 +9,7 @@ import {
 } from '@appbaseio/reactivesearch';
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
-import { css } from 'react-emotion';
+import { css, injectGlobal } from 'react-emotion';
 import { Card, Collapse, Button, Icon, message, Affix } from 'antd';
 import strip from 'striptags';
 import Truncate from 'react-truncate';
@@ -174,6 +174,7 @@ class Search extends Component {
             this.setState({
                 preferences: preferences.message.default,
                 customMessage: preferences.message.customMessage || {},
+                customSuggestions: preferences.message.customSuggestions,
                 theme: preferences.message._theme || {
                     colors: {
                         primaryColor: '#0B6AFF',
@@ -191,6 +192,9 @@ class Search extends Component {
                     : '',
                 themeType: preferences.message._themeType || 'classic',
             });
+            injectGlobal`
+                ${preferences.message.customStyles || ''}
+            `;
         } catch (error) {
             // eslint-disable-next-line
             console.error(error);
@@ -418,6 +422,7 @@ class Search extends Component {
             currency,
             preferences,
             customMessage,
+            customSuggestions,
         } = this.state;
         const { search } = preferences;
         return (
@@ -438,9 +443,15 @@ class Search extends Component {
                     'title.search',
                     'title.autosuggest',
                 ]}
+                className="search"
                 placeholder="Search for products..."
                 iconPosition="right"
-                css={{ marginBottom: 20 }}
+                css={{
+                    marginBottom: 20,
+                    position: 'sticky',
+                    top: '10px',
+                    zIndex: 4,
+                }}
                 render={({
                     value,
                     categories,
@@ -467,6 +478,7 @@ class Search extends Component {
                                     settings.showPopularSearches
                                 }
                                 popularSearches={popularSearches}
+                                customSuggestions={customSuggestions}
                             />
                         )
                     );
@@ -606,6 +618,7 @@ class Search extends Component {
                                                 ? 'none'
                                                 : '298px',
                                         }}
+                                        className="filter"
                                     >
                                         <MultiList
                                             key={listComponent}
@@ -668,6 +681,7 @@ class Search extends Component {
                                         showArrow={themeType !== 'minimal'}
                                         key="price-filter"
                                         css={this.getFontFamily()}
+                                        className="filter"
                                     >
                                         <DynamicRangeSlider
                                             componentId="price"
@@ -708,6 +722,7 @@ class Search extends Component {
                                         showArrow={themeType !== 'minimal'}
                                         key="collections-filter"
                                         css={this.getFontFamily()}
+                                        className="filter"
                                     >
                                         {this.renderCollectionFilter(
                                             this.getFontFamily,
@@ -716,6 +731,7 @@ class Search extends Component {
                                 ) : null}
                                 {settings.showColorFilter ? (
                                     <Panel
+                                        className="filter"
                                         header={
                                             <span
                                                 css={{
@@ -739,6 +755,7 @@ class Search extends Component {
                                 ) : null}
                                 {settings.showSizeFilter ? (
                                     <Panel
+                                        className="filter"
                                         header={
                                             <span
                                                 css={{
@@ -780,7 +797,7 @@ class Search extends Component {
                                 componentId="results"
                                 dataField="title"
                                 defaultQuery={() => ({
-                                    query: { term: { _type: 'products' } },
+                                    query: { term: { type: 'products' } },
                                 })}
                                 renderNoResults={() => (
                                     <div
@@ -837,9 +854,9 @@ class Search extends Component {
                                         <Card
                                             hoverable
                                             bordered={false}
-                                            className={cardStyles({
+                                            className={`${cardStyles({
                                                 ...theme.colors,
-                                            })}
+                                            })} card`}
                                             cover={
                                                 image && (
                                                     <img
@@ -849,12 +866,13 @@ class Search extends Component {
                                                     />
                                                 )
                                             }
-                                            css={
-                                                (this.getFontFamily(),
-                                                themeType === 'minimal'
-                                                    ? { padding: 10 }
-                                                    : {})
-                                            }
+                                            css={{
+                                                ...this.getFontFamily(),
+                                                padding:
+                                                    themeType === 'minimal'
+                                                        ? '10px'
+                                                        : 0,
+                                            }}
                                             bodyStyle={
                                                 themeType === 'minimal'
                                                     ? {
