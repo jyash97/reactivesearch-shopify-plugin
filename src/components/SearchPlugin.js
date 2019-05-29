@@ -90,7 +90,6 @@ class App extends Component {
         if (appname && credentials) {
             try {
                 const preferences = await getPreferences(appname, credentials);
-                console.log(preferences.message.searchButton);
                 this.setState({
                     theme: preferences.message._theme,
                     searchButton: preferences.message.searchButton || {},
@@ -111,7 +110,6 @@ class App extends Component {
     render() {
         const { isOpen, theme, searchButton } = this.state;
         const { openWithModal } = this.props;
-        console.log(searchButton);
         const isValid = appname && credentials;
         const isOpenWithModal = Boolean(openWithModal);
         let fontFamilyLink = '';
