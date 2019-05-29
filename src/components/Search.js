@@ -473,7 +473,8 @@ class Search extends Component {
                                 loading={loading}
                                 parsedSuggestions={rawSuggestions.filter(
                                     suggestion =>
-                                        suggestion._type !== 'collections',
+                                        suggestion._source.type !==
+                                        'collections',
                                 )}
                                 themeConfig={theme}
                                 currency={currency}
