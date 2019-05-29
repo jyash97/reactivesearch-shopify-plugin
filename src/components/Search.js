@@ -9,7 +9,7 @@ import {
 } from '@appbaseio/reactivesearch';
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
-import { css } from 'react-emotion';
+import { css, injectGlobal } from 'react-emotion';
 import { Card, Collapse, Button, Icon, message, Affix } from 'antd';
 import strip from 'striptags';
 import Truncate from 'react-truncate';
@@ -29,6 +29,11 @@ const minimalSearchStyles = ({ titleColor }) => css`
         color: ${titleColor};
         box-shadow: 0px 0px 4px ${titleColor}1a;
     }
+`;
+
+const loaderStyle = css`
+    margin: 10px 0;
+    position: relative;
 `;
 
 const paginationStyle = toggleFilters => css`
@@ -168,6 +173,8 @@ class Search extends Component {
 
             this.setState({
                 preferences: preferences.message.default,
+                customMessage: preferences.message.customMessage || {},
+                customSuggestions: preferences.message.customSuggestions,
                 theme: preferences.message._theme || {
                     colors: {
                         primaryColor: '#0B6AFF',
@@ -185,6 +192,9 @@ class Search extends Component {
                     : '',
                 themeType: preferences.message._themeType || 'classic',
             });
+            injectGlobal`
+                ${preferences.message.customStyles || ''}
+            `;
         } catch (error) {
             // eslint-disable-next-line
             console.error(error);
@@ -242,7 +252,7 @@ class Search extends Component {
 
     renderCollectionFilter = (
         font,
-        { theme } = this.state, // eslint-disable-line
+        { theme, customMessage } = this.state, // eslint-disable-line
         { themeType } = this.state,
     ) => {
         const defaultQuery = {
@@ -257,6 +267,14 @@ class Search extends Component {
                 dataField="collections"
                 componentId="collections"
                 css={font}
+                renderNoResults={() => (
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                customMessage.noFilterItem || 'No items Found',
+                        }}
+                    />
+                )}
                 defaultQuery={() => defaultQuery}
                 showCheckbox={themeType !== 'minimal'}
             />
@@ -266,7 +284,7 @@ class Search extends Component {
     renderColorFilter = (
         font,
         { theme } = this.state, // eslint-disable-line
-        { themeType } = this.state,
+        { themeType, customMessage } = this.state,
     ) => {
         return (
             <React.Fragment>
@@ -287,7 +305,16 @@ class Search extends Component {
                         const values = Object.keys(value);
                         const broswerStringColors = Object.keys(browserColors);
                         if (loading) {
-                            return <div>Fetching Colors!</div>;
+                            return (
+                                <div
+                                    className={loaderStyle}
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            customMessage.fetchingFilterOptions ||
+                                            'Fetching Colors',
+                                    }}
+                                />
+                            );
                         }
                         if (error) {
                             return (
@@ -298,7 +325,15 @@ class Search extends Component {
                             );
                         }
                         if (data.length === 0) {
-                            return 'No Colors found!';
+                            return (
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            customMessage.noFilterItem ||
+                                            'No color Found',
+                                    }}
+                                />
+                            );
                         }
                         return (
                             <div className={colorContainer}>
@@ -337,7 +372,7 @@ class Search extends Component {
 
     renderSizeFilter = (
         font,
-        { theme } = this.state, // eslint-disable-line
+        { theme, customMessage } = this.state, // eslint-disable-line
         { themeType } = this.state,
     ) => {
         return (
@@ -354,7 +389,25 @@ class Search extends Component {
                     componentId="size"
                     react={{ and: ['sizeOption'] }}
                     css={font}
-                    renderNoResults={() => 'No items found!'}
+                    loader={() => (
+                        <div
+                            className={loaderStyle}
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    customMessage.fetchingFilterOptions ||
+                                    'Fetching Sizes!',
+                            }}
+                        />
+                    )}
+                    renderNoResults={() => (
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    customMessage.noFilterItem ||
+                                    'No color Found',
+                            }}
+                        />
+                    )}
                     showCheckbox={themeType !== 'minimal'}
                 />
             </React.Fragment>
@@ -368,6 +421,8 @@ class Search extends Component {
             theme,
             currency,
             preferences,
+            customMessage,
+            customSuggestions,
         } = this.state;
         const { search } = preferences;
         return (
@@ -388,9 +443,15 @@ class Search extends Component {
                     'title.search',
                     'title.autosuggest',
                 ]}
+                className="search"
                 placeholder="Search for products..."
                 iconPosition="right"
-                css={{ marginBottom: 20 }}
+                css={{
+                    marginBottom: 20,
+                    position: 'sticky',
+                    top: '10px',
+                    zIndex: 4,
+                }}
                 render={({
                     value,
                     categories,
@@ -404,6 +465,7 @@ class Search extends Component {
                             <Suggestions
                                 currentValue={value}
                                 categories={categories}
+                                customMessage={customMessage}
                                 getItemProps={downshiftProps.getItemProps}
                                 highlightedIndex={
                                     downshiftProps.highlightedIndex
@@ -416,6 +478,7 @@ class Search extends Component {
                                     settings.showPopularSearches
                                 }
                                 popularSearches={popularSearches}
+                                customSuggestions={customSuggestions}
                             />
                         )
                     );
@@ -450,6 +513,7 @@ class Search extends Component {
             currency,
             toggleFilters,
             settings,
+            customMessage,
         } = this.state;
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
@@ -554,6 +618,7 @@ class Search extends Component {
                                                 ? 'none'
                                                 : '298px',
                                         }}
+                                        className="filter"
                                     >
                                         <MultiList
                                             key={listComponent}
@@ -569,6 +634,25 @@ class Search extends Component {
                                                 <span
                                                     dangerouslySetInnerHTML={{
                                                         __html: item,
+                                                    }}
+                                                />
+                                            )}
+                                            loader={
+                                                <div
+                                                    className={loaderStyle}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            customMessage.fetchingFilterOptions ||
+                                                            '',
+                                                    }}
+                                                />
+                                            }
+                                            renderNoResults={() => (
+                                                <div
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            customMessage.noFilterItem ||
+                                                            'No color Found',
                                                     }}
                                                 />
                                             )}
@@ -597,12 +681,23 @@ class Search extends Component {
                                         showArrow={themeType !== 'minimal'}
                                         key="price-filter"
                                         css={this.getFontFamily()}
+                                        className="filter"
                                     >
                                         <DynamicRangeSlider
                                             componentId="price"
                                             dataField="variants.price"
                                             tooltipTrigger="hover"
                                             css={this.getFontFamily()}
+                                            loader={
+                                                <div
+                                                    className={loaderStyle}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            customMessage.fetchingFilterOptions ||
+                                                            '',
+                                                    }}
+                                                />
+                                            }
                                             rangeLabels={(min, max) => ({
                                                 start: `${currency} ${min}`,
                                                 end: `${currency} ${max}`,
@@ -627,6 +722,7 @@ class Search extends Component {
                                         showArrow={themeType !== 'minimal'}
                                         key="collections-filter"
                                         css={this.getFontFamily()}
+                                        className="filter"
                                     >
                                         {this.renderCollectionFilter(
                                             this.getFontFamily,
@@ -635,6 +731,7 @@ class Search extends Component {
                                 ) : null}
                                 {settings.showColorFilter ? (
                                     <Panel
+                                        className="filter"
                                         header={
                                             <span
                                                 css={{
@@ -658,6 +755,7 @@ class Search extends Component {
                                 ) : null}
                                 {settings.showSizeFilter ? (
                                     <Panel
+                                        className="filter"
                                         header={
                                             <span
                                                 css={{
@@ -699,8 +797,42 @@ class Search extends Component {
                                 componentId="results"
                                 dataField="title"
                                 defaultQuery={() => ({
-                                    query: { term: { _type: 'products' } },
+                                    query: { term: { type: 'products' } },
                                 })}
+                                renderNoResults={() => (
+                                    <div
+                                        css={{ textAlign: 'right' }}
+                                        dangerouslySetInnerHTML={{
+                                            __html:
+                                                customMessage.noResultItem ||
+                                                'No Results Found!',
+                                        }}
+                                    />
+                                )}
+                                renderResultStats={({
+                                    numberOfResults,
+                                    time,
+                                }) => {
+                                    if (customMessage.resultStats) {
+                                        return (
+                                            <div
+                                                css={{ textAlign: 'right' }}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: customMessage.resultStats
+                                                        .replace(
+                                                            '[count]',
+                                                            numberOfResults,
+                                                        )
+                                                        .replace(
+                                                            '[time]',
+                                                            time,
+                                                        ),
+                                                }}
+                                            />
+                                        );
+                                    }
+                                    return `${numberOfResults} found in ${time} ms`;
+                                }}
                                 renderItem={(
                                     {
                                         _id,
@@ -722,9 +854,9 @@ class Search extends Component {
                                         <Card
                                             hoverable
                                             bordered={false}
-                                            className={cardStyles({
+                                            className={`${cardStyles({
                                                 ...theme.colors,
-                                            })}
+                                            })} card`}
                                             cover={
                                                 image && (
                                                     <img
@@ -734,12 +866,13 @@ class Search extends Component {
                                                     />
                                                 )
                                             }
-                                            css={
-                                                (this.getFontFamily(),
-                                                themeType === 'minimal'
-                                                    ? { padding: 10 }
-                                                    : {})
-                                            }
+                                            css={{
+                                                ...this.getFontFamily(),
+                                                padding:
+                                                    themeType === 'minimal'
+                                                        ? '10px'
+                                                        : 0,
+                                            }}
                                             bodyStyle={
                                                 themeType === 'minimal'
                                                     ? {

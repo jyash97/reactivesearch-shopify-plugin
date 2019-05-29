@@ -175,7 +175,7 @@ class ProductSuggestions extends React.Component {
                     <div css={titleCls}>You might also like</div>
                     <ReactiveList
                         defaultQuery={() => ({
-                            query: { term: { _type: 'products' } },
+                            query: { term: { type: 'products' } },
                         })}
                         onData={({ resultStats: { numberOfResults } }) => {
                             this.total = numberOfResults;
