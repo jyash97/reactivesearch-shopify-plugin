@@ -9,7 +9,7 @@ import {
 } from '@appbaseio/reactivesearch';
 import { string } from 'prop-types';
 import { mediaMax } from '@divyanshu013/media';
-import { css } from 'react-emotion';
+import { css, injectGlobal } from 'react-emotion';
 import { Card, Collapse, Button, Icon, message, Affix } from 'antd';
 import strip from 'striptags';
 import Truncate from 'react-truncate';
@@ -185,6 +185,9 @@ class Search extends Component {
                     : '',
                 themeType: preferences.message._themeType || 'classic',
             });
+            injectGlobal`
+                ${preferences.message.customStyles || ''}
+            `;
         } catch (error) {
             // eslint-disable-next-line
             console.error(error);
@@ -388,6 +391,7 @@ class Search extends Component {
                     'title.search',
                     'title.autosuggest',
                 ]}
+                className="search"
                 placeholder="Search for products..."
                 iconPosition="right"
                 css={{
@@ -559,6 +563,7 @@ class Search extends Component {
                                                 ? 'none'
                                                 : '298px',
                                         }}
+                                        className="filter"
                                     >
                                         <MultiList
                                             key={listComponent}
@@ -602,6 +607,7 @@ class Search extends Component {
                                         showArrow={themeType !== 'minimal'}
                                         key="price-filter"
                                         css={this.getFontFamily()}
+                                        className="filter"
                                     >
                                         <DynamicRangeSlider
                                             componentId="price"
@@ -632,6 +638,7 @@ class Search extends Component {
                                         showArrow={themeType !== 'minimal'}
                                         key="collections-filter"
                                         css={this.getFontFamily()}
+                                        className="filter"
                                     >
                                         {this.renderCollectionFilter(
                                             this.getFontFamily,
@@ -640,6 +647,7 @@ class Search extends Component {
                                 ) : null}
                                 {settings.showColorFilter ? (
                                     <Panel
+                                        className="filter"
                                         header={
                                             <span
                                                 css={{
@@ -663,6 +671,7 @@ class Search extends Component {
                                 ) : null}
                                 {settings.showSizeFilter ? (
                                     <Panel
+                                        className="filter"
                                         header={
                                             <span
                                                 css={{
@@ -727,9 +736,9 @@ class Search extends Component {
                                         <Card
                                             hoverable
                                             bordered={false}
-                                            className={cardStyles({
+                                            className={`${cardStyles({
                                                 ...theme.colors,
-                                            })}
+                                            })} card`}
                                             cover={
                                                 image && (
                                                     <img
