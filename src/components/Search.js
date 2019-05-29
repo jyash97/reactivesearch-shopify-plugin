@@ -390,7 +390,12 @@ class Search extends Component {
                 ]}
                 placeholder="Search for products..."
                 iconPosition="right"
-                css={{ marginBottom: 20 }}
+                css={{
+                    marginBottom: 20,
+                    position: 'sticky',
+                    top: '10px',
+                    zIndex: 4,
+                }}
                 render={({
                     value,
                     categories,
@@ -734,12 +739,13 @@ class Search extends Component {
                                                     />
                                                 )
                                             }
-                                            css={
-                                                (this.getFontFamily(),
-                                                themeType === 'minimal'
-                                                    ? { padding: 10 }
-                                                    : {})
-                                            }
+                                            css={{
+                                                ...this.getFontFamily(),
+                                                padding:
+                                                    themeType === 'minimal'
+                                                        ? '10px'
+                                                        : 0,
+                                            }}
                                             bodyStyle={
                                                 themeType === 'minimal'
                                                     ? {
