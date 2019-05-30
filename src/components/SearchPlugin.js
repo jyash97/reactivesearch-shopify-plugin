@@ -40,15 +40,21 @@ const getButtonClass = theme => {
             alignItems: 'center',
             display: 'flex',
             justifyContent: 'space-between',
-            width: '44px',
             borderRadius: '50px',
             overflow: 'hidden',
             boxShadow: `0 0 0 2px ${primaryColor}1a`,
             '&:hover': {
-                width: '182px',
-                '& span': { opacity: 1 },
+                '& span': { width: '100%', opacity: 1 },
             },
-            '& span': { opacity: 0 },
+            '& span': {
+                width: 0,
+                opacity: 0,
+                overflow: 'hidden',
+                transition: 'all ease 0.2s',
+            },
+            img: {
+                width: 40,
+            },
         },
     };
 
@@ -76,6 +82,7 @@ class App extends Component {
         this.state = {
             isOpen: Boolean(props.isOpen),
             theme: {},
+            searchButton: {},
         };
     }
 
@@ -85,6 +92,7 @@ class App extends Component {
                 const preferences = await getPreferences(appname, credentials);
                 this.setState({
                     theme: preferences.message._theme,
+                    searchButton: preferences.message.searchButton || {},
                 });
             } catch (error) {
                 // eslint-disable-next-line
@@ -100,7 +108,7 @@ class App extends Component {
     };
 
     render() {
-        const { isOpen, theme } = this.state;
+        const { isOpen, theme, searchButton } = this.state;
         const { openWithModal } = this.props;
         const isValid = appname && credentials;
         const isOpenWithModal = Boolean(openWithModal);
@@ -127,9 +135,18 @@ class App extends Component {
             <Fragment>
                 {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
                 <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
-                    <Icon className={getIconClass(theme)} type="search" />
+                    {searchButton.icon ? (
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: searchButton.icon,
+                            }}
+                        />
+                    ) : (
+                        <Icon className={getIconClass(theme)} type="search" />
+                    )}
+
                     <span className={getTextClass(theme)}>
-                        Click here to Search
+                        {searchButton.text || 'Click here to Search'}
                     </span>
                 </Button>
                 {isValid && isOpen && (
