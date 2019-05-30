@@ -13,6 +13,7 @@ import { css, injectGlobal } from 'react-emotion';
 import { Card, Collapse, Button, Icon, message, Affix } from 'antd';
 import strip from 'striptags';
 import Truncate from 'react-truncate';
+import get from 'lodash.get';
 
 import Suggestions from './Suggestions';
 import { accapi } from '../constants';
@@ -170,12 +171,16 @@ class Search extends Component {
             ).then(res => res.json());
 
             this.getPopularSearches();
-
+            const preferenceMessage = get(preferences, 'message', {});
             this.setState({
-                preferences: preferences.message.default,
-                customMessage: preferences.message.customMessage || {},
-                customSuggestions: preferences.message.customSuggestions,
-                theme: preferences.message._theme || {
+                preferences: get(preferenceMessage, 'default', {}),
+                customMessage: get(preferenceMessage, 'customMessage', {}),
+                customSuggestions: get(
+                    preferenceMessage,
+                    'customSuggestions',
+                    {},
+                ),
+                theme: get(preferenceMessage, '_theme', {
                     colors: {
                         primaryColor: '#0B6AFF',
                         primaryTextColor: '#fff',
@@ -185,15 +190,17 @@ class Search extends Component {
                     typography: {
                         fontFamily: 'default',
                     },
-                },
-                settings: checkPreferences(preferences.message._settings),
-                currency: preferences.message._store
-                    ? preferences.message._store.currency
-                    : '',
-                themeType: preferences.message._themeType || 'classic',
+                }),
+                settings: checkPreferences(
+                    get(preferenceMessage, '_settings', {}),
+                ),
+                currency: get(preferenceMessage, '_store.currency', ''),
+                themeType: get(preferenceMessage, '_themeType', 'classic'),
             });
+
+            const globalStyles = get(preferenceMessage, 'customStyles', '');
             injectGlobal`
-                ${preferences.message.customStyles || ''}
+                ${globalStyles}
             `;
         } catch (error) {
             // eslint-disable-next-line
@@ -243,9 +250,10 @@ class Search extends Component {
 
     getFontFamily = () => {
         const { theme } = this.state;
+        const receivedFont = get(theme, 'typography.fontFamily', '');
         let fontFamily = '';
-        if (theme.typography && theme.typography.fontFamily !== 'default') {
-            fontFamily = theme.typography.fontFamily; // eslint-disable-line
+        if (receivedFont && receivedFont !== 'default') {
+            fontFamily = receivedFont; // eslint-disable-line
         }
         return fontFamily ? { fontFamily } : {};
     };
@@ -270,8 +278,11 @@ class Search extends Component {
                 renderNoResults={() => (
                     <div
                         dangerouslySetInnerHTML={{
-                            __html:
-                                customMessage.noFilterItem || 'No items Found',
+                            __html: get(
+                                customMessage,
+                                'noFilterItem',
+                                'No items Found',
+                            ),
                         }}
                     />
                 )}
@@ -302,16 +313,18 @@ class Search extends Component {
                     css={font}
                     showCheckbox={themeType !== 'minimal'}
                     render={({ loading, error, data, handleChange, value }) => {
-                        const values = Object.keys(value);
+                        const values = [...new Set(Object.keys(value))];
                         const broswerStringColors = Object.keys(browserColors);
                         if (loading) {
                             return (
                                 <div
                                     className={loaderStyle}
                                     dangerouslySetInnerHTML={{
-                                        __html:
-                                            customMessage.fetchingFilterOptions ||
+                                        __html: get(
+                                            customMessage,
+                                            'fetchingFilterOptions',
                                             'Fetching Colors',
+                                        ),
                                     }}
                                 />
                             );
@@ -328,13 +341,17 @@ class Search extends Component {
                             return (
                                 <div
                                     dangerouslySetInnerHTML={{
-                                        __html:
-                                            customMessage.noFilterItem ||
+                                        __html: get(
+                                            customMessage,
+                                            'noFilterItem',
                                             'No color Found',
+                                        ),
                                     }}
                                 />
                             );
                         }
+                        const primaryColor =
+                            get(theme, 'colors.primaryColor', '') || '#0B6AFF';
                         return (
                             <div className={colorContainer}>
                                 {data.map(item =>
@@ -354,8 +371,7 @@ class Search extends Component {
                                                 border: `2px solid ${
                                                     values &&
                                                     values.includes(item.key)
-                                                        ? theme.colors
-                                                              .primaryColor
+                                                        ? primaryColor
                                                         : 'transparent'
                                                 }`,
                                             }}
@@ -393,18 +409,22 @@ class Search extends Component {
                         <div
                             className={loaderStyle}
                             dangerouslySetInnerHTML={{
-                                __html:
-                                    customMessage.fetchingFilterOptions ||
+                                __html: get(
+                                    customMessage,
+                                    'fetchingFilterOptions',
                                     'Fetching Sizes!',
+                                ),
                             }}
                         />
                     )}
                     renderNoResults={() => (
                         <div
                             dangerouslySetInnerHTML={{
-                                __html:
-                                    customMessage.noFilterItem ||
-                                    'No color Found',
+                                __html: get(
+                                    customMessage,
+                                    'noFilterItem',
+                                    'No sizes Found',
+                                ),
                             }}
                         />
                     )}
@@ -645,18 +665,22 @@ class Search extends Component {
                                                 <div
                                                     className={loaderStyle}
                                                     dangerouslySetInnerHTML={{
-                                                        __html:
-                                                            customMessage.fetchingFilterOptions ||
+                                                        __html: get(
+                                                            customMessage,
+                                                            'fetchingFilterOptions',
                                                             '',
+                                                        ),
                                                     }}
                                                 />
                                             }
                                             renderNoResults={() => (
                                                 <div
                                                     dangerouslySetInnerHTML={{
-                                                        __html:
-                                                            customMessage.noFilterItem ||
-                                                            'No color Found',
+                                                        __html: get(
+                                                            customMessage,
+                                                            'noFilterItem',
+                                                            'No items Found',
+                                                        ),
                                                     }}
                                                 />
                                             )}
@@ -696,9 +720,11 @@ class Search extends Component {
                                                 <div
                                                     className={loaderStyle}
                                                     dangerouslySetInnerHTML={{
-                                                        __html:
-                                                            customMessage.fetchingFilterOptions ||
+                                                        __html: get(
+                                                            customMessage,
+                                                            'fetchingFilterOptions',
                                                             '',
+                                                        ),
                                                     }}
                                                 />
                                             }
@@ -807,9 +833,11 @@ class Search extends Component {
                                     <div
                                         css={{ textAlign: 'right' }}
                                         dangerouslySetInnerHTML={{
-                                            __html:
-                                                customMessage.noResultItem ||
+                                            __html: get(
+                                                customMessage,
+                                                'noResultItem',
                                                 'No Results Found!',
+                                            ),
                                         }}
                                     />
                                 )}
@@ -817,25 +845,23 @@ class Search extends Component {
                                     numberOfResults,
                                     time,
                                 }) => {
-                                    if (customMessage.resultStats) {
-                                        return (
-                                            <div
-                                                css={{ textAlign: 'right' }}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: customMessage.resultStats
-                                                        .replace(
-                                                            '[count]',
-                                                            numberOfResults,
-                                                        )
-                                                        .replace(
-                                                            '[time]',
-                                                            time,
-                                                        ),
-                                                }}
-                                            />
-                                        );
-                                    }
-                                    return `${numberOfResults} found in ${time} ms`;
+                                    return (
+                                        <div
+                                            css={{ textAlign: 'right' }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: get(
+                                                    customMessage,
+                                                    'resultStats',
+                                                    '[count] products found in [time] ms',
+                                                )
+                                                    .replace(
+                                                        '[count]',
+                                                        numberOfResults,
+                                                    )
+                                                    .replace('[time]', time),
+                                            }}
+                                        />
+                                    );
                                 }}
                                 renderItem={(
                                     {
@@ -934,9 +960,11 @@ class Search extends Component {
                                                     }}
                                                 >
                                                     {variants &&
-                                                        `${currency} ${
-                                                            variants[0].price
-                                                        }`}
+                                                        `${currency} ${get(
+                                                            variants[0],
+                                                            'price',
+                                                            '',
+                                                        )}`}
                                                 </h3>
                                             </div>
                                             <Button

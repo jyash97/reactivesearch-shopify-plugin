@@ -4,6 +4,7 @@ import { Button, Modal, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { getPreferences } from '../utils';
+import get from 'lodash.get';
 
 import Search from './Search';
 
@@ -30,7 +31,7 @@ const modalStyles = css`
 `;
 
 const getButtonClass = theme => {
-    const primaryColor = theme && theme.colors && theme.colors.primaryColor;
+    const primaryColor = get(theme, 'colors.primaryColor', '') || '#0B6AFF';
     const styles = {
         button: {
             borderColor: `${primaryColor} !important`,
@@ -62,7 +63,7 @@ const getButtonClass = theme => {
 };
 
 const getIconClass = theme => {
-    const primaryColor = theme && theme.colors && theme.colors.primaryColor;
+    const primaryColor = get(theme, 'colors.primaryColor', '') || '#0B6AFF';
     return css({
         color: `${primaryColor} !important`,
         ...iconStyle,
@@ -70,7 +71,7 @@ const getIconClass = theme => {
 };
 
 const getTextClass = theme => {
-    const primaryColor = theme && theme.colors && theme.colors.primaryColor;
+    const primaryColor = get(theme, 'colors.primaryColor', '') || '#0B6AFF';
     return css({
         color: `${primaryColor} !important`,
     });
@@ -91,8 +92,8 @@ class App extends Component {
             try {
                 const preferences = await getPreferences(appname, credentials);
                 this.setState({
-                    theme: preferences.message._theme,
-                    searchButton: preferences.message.searchButton || {},
+                    theme: get(preferences, 'message._theme', {}),
+                    searchButton: get(preferences, 'message.searchButton', {}),
                 });
             } catch (error) {
                 // eslint-disable-next-line
@@ -113,15 +114,9 @@ class App extends Component {
         const isValid = appname && credentials;
         const isOpenWithModal = Boolean(openWithModal);
         let fontFamilyLink = '';
-        if (
-            theme &&
-            theme.typography &&
-            theme.typography.fontFamily &&
-            theme.typography.fontFamily !== 'default'
-        ) {
-            const parsedFontFamily = theme.typography.fontFamily
-                .split(' ')
-                .join('+');
+        const fontFamily = get(theme, 'typography.fontFamily');
+        if (fontFamily && fontFamily !== 'default') {
+            const parsedFontFamily = fontFamily.split(' ').join('+');
             fontFamilyLink = (
                 <link
                     href={`https://fonts.googleapis.com/css?family=${parsedFontFamily}`}

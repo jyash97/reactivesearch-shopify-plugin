@@ -6,6 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { css } from 'react-emotion';
 import { mediaMax } from '@divyanshu013/media';
 import { ReactiveBase, ReactiveList } from '@appbaseio/reactivesearch';
+import get from 'lodash.get';
 import SuggestionCard from './SuggestionCard';
 import { getPreferences } from '../utils';
 import Loader from './Loader';
@@ -81,12 +82,21 @@ class ProductSuggestions extends React.Component {
         if (appname && credentials) {
             try {
                 const preferences = await getPreferences(appname, credentials);
+                const preferenceMessage = get(preferences, 'message', {});
                 this.setState({
-                    preferences: preferences.message.default,
-                    theme: preferences.message._theme,
-                    currency: preferences.message._store
-                        ? preferences.message._store.currency
-                        : '',
+                    preferences: get(preferenceMessage, 'default', {}),
+                    theme: get(preferenceMessage, '_theme', {
+                        colors: {
+                            primaryColor: '#0B6AFF',
+                            primaryTextColor: '#fff',
+                            textColor: '#424242',
+                            titleColor: '#424242',
+                        },
+                        typography: {
+                            fontFamily: 'default',
+                        },
+                    }),
+                    currency: get(preferenceMessage, '_store.currency', ''),
                 });
             } catch (error) {
                 // eslint-disable-next-line

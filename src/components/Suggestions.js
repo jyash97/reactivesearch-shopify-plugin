@@ -3,7 +3,7 @@ import { string, object, arrayOf, func, number } from 'prop-types';
 import { css } from 'react-emotion';
 import Highlight from 'react-highlight-words';
 import strip from 'striptags';
-import Loader from './Loader';
+import get from 'lodash.get';
 
 const headingStyles = ({ titleColor, primaryColor }) => css`
     margin: 8px 0;
@@ -55,35 +55,31 @@ const Suggestions = ({
         }}
     >
         {loading ? (
-            customMessage.fetchingSuggestion ? (
-                <div
-                    css={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        display: 'flex',
-                    }}
-                    dangerouslySetInnerHTML={{
-                        __html:
-                            customMessage.fetchingSuggestion ||
-                            'Loading Suggestions',
-                    }}
-                />
-            ) : (
-                <Loader />
-            )
+            <div
+                css={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                }}
+                dangerouslySetInnerHTML={{
+                    __html: get(
+                        customMessage,
+                        'fetchingSuggestion',
+                        'Loading Suggestions',
+                    ),
+                }}
+            />
         ) : (
             <div>
                 {!loading && parsedSuggestions.length === 0 && (
                     <React.Fragment>
                         <div
                             dangerouslySetInnerHTML={{
-                                __html:
-                                    (customMessage.noSuggestion &&
-                                        customMessage.noSuggestion.replace(
-                                            '[term]',
-                                            currentValue,
-                                        )) ||
-                                    `No suggestions found for <mark>${currentValue}</mark>`,
+                                __html: get(
+                                    customMessage,
+                                    'noSuggestion',
+                                    'No suggestions found for <mark>[term]</mark>',
+                                ).replace('[term]', currentValue),
                             }}
                         />
                     </React.Fragment>
@@ -120,20 +116,22 @@ const Suggestions = ({
                                 alignItems: 'center',
                             }}
                         >
-                            {suggestion &&
-                                suggestion._source &&
-                                suggestion._source.image && (
-                                    <img
-                                        src={suggestion._source.image.src}
-                                        alt=" "
-                                        width="80px"
-                                        css={{ marginRight: 15 }}
-                                    />
-                                )}
+                            {get(suggestion, '_source.image.src', '') && (
+                                <img
+                                    src={suggestion._source.image.src}
+                                    alt=" "
+                                    width="80px"
+                                    css={{ marginRight: 15 }}
+                                />
+                            )}
                             <div>
                                 <Highlight
                                     searchWords={currentValue.split(' ')}
-                                    textToHighlight={suggestion._source.title}
+                                    textToHighlight={get(
+                                        suggestion,
+                                        '_source.title',
+                                        '',
+                                    )}
                                     highlightStyle={{
                                         fontWeight: 700,
                                         padding: 0,
@@ -158,9 +156,11 @@ const Suggestions = ({
                                     <Highlight
                                         searchWords={currentValue.split(' ')}
                                         textToHighlight={
-                                            suggestion &&
-                                            suggestion._source &&
-                                            suggestion._source.body_html &&
+                                            get(
+                                                suggestion,
+                                                '_source.body_html',
+                                                '',
+                                            ) &&
                                             `${strip(
                                                 suggestion._source.body_html.slice(
                                                     0,
