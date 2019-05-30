@@ -114,6 +114,7 @@ class App extends Component {
         const isOpenWithModal = Boolean(openWithModal);
         let fontFamilyLink = '';
         if (
+            theme &&
             theme.typography &&
             theme.typography.fontFamily &&
             theme.typography.fontFamily !== 'default'

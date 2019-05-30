@@ -63,7 +63,9 @@ const Suggestions = ({
                         display: 'flex',
                     }}
                     dangerouslySetInnerHTML={{
-                        __html: customMessage.fetchingSuggestion,
+                        __html:
+                            customMessage.fetchingSuggestion ||
+                            'Loading Suggestions',
                     }}
                 />
             ) : (
@@ -76,10 +78,11 @@ const Suggestions = ({
                         <div
                             dangerouslySetInnerHTML={{
                                 __html:
-                                    customMessage.noSuggestion.replace(
-                                        '[term]',
-                                        currentValue,
-                                    ) ||
+                                    (customMessage.noSuggestion &&
+                                        customMessage.noSuggestion.replace(
+                                            '[term]',
+                                            currentValue,
+                                        )) ||
                                     `No suggestions found for <mark>${currentValue}</mark>`,
                             }}
                         />
