@@ -174,11 +174,11 @@ class Search extends Component {
             const preferenceMessage = get(preferences, 'message', {});
             this.setState({
                 preferences: get(preferenceMessage, 'default', {}),
-                customMessage: get(preferenceMessage, 'customMessage', {}),
+                customMessage: get(preferenceMessage, 'customMessage', ''),
                 customSuggestions: get(
                     preferenceMessage,
                     'customSuggestions',
-                    {},
+                    '',
                 ),
                 theme: get(preferenceMessage, '_theme', {
                     colors: {
