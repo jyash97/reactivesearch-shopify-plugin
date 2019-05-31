@@ -52,6 +52,9 @@ const Suggestions = ({
             marginTop: 0,
             width: '100%',
             zIndex: 10,
+            maxHeight: 500,
+            overflowY: 'scroll',
+            boxShadow: '0 2px 4px #d9d9d9',
         }}
     >
         {loading ? (

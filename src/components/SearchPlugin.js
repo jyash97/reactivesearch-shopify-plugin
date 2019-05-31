@@ -40,22 +40,20 @@ const getButtonClass = theme => {
             marginRight: '3px',
             alignItems: 'center',
             display: 'flex',
-            justifyContent: 'space-between',
+            transition: 'all ease 0.2s',
             borderRadius: '50px',
             overflow: 'hidden',
             boxShadow: `0 0 0 2px ${primaryColor}1a`,
             '&:hover': {
-                '& span': { width: '100%', opacity: 1 },
+                '& .text-container': { marginLeft: 5, width: '100%' },
             },
-            '& span': {
-                width: 0,
-                opacity: 0,
+            '& .text-container': {
+                display: 'inline-flex',
+                width: '0px',
                 overflow: 'hidden',
                 transition: 'all ease 0.2s',
             },
-            img: {
-                width: 40,
-            },
+            img: { width: 40 },
         },
     };
 
@@ -131,19 +129,24 @@ class App extends Component {
             <Fragment>
                 {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
                 <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
-                    {searchButton.icon ? (
-                        <div
-                            dangerouslySetInnerHTML={{
-                                __html: searchButton.icon,
-                            }}
-                        />
-                    ) : (
-                        <Icon className={getIconClass(theme)} type="search" />
-                    )}
+                    <div className="icon-container">
+                        {searchButton.icon ? (
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: searchButton.icon,
+                                }}
+                            />
+                        ) : (
+                            <Icon
+                                className={getIconClass(theme)}
+                                type="search"
+                            />
+                        )}
+                    </div>
 
-                    <span className={getTextClass(theme)}>
+                    <div className={`text-container ${getTextClass(theme)}`}>
                         {searchButton.text || 'Click here to Search'}
-                    </span>
+                    </div>
                 </Button>
                 {isValid && isOpen && (
                     <Modal
