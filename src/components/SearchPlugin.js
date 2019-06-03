@@ -23,8 +23,14 @@ if (!credentials) {
 
 const modalStyles = css`
     top: 0;
-    position: absolute;
     height: 100vh;
+    overflow-y: scroll;
+    .ant-modal {
+        top: 0;
+    }
+    .ant-modal-content {
+        border-radius: 0;
+    }
     @media (max-width: 768px) {
         margin: 0;
     }
@@ -39,7 +45,7 @@ const getButtonClass = theme => {
             marginLeft: '3px',
             marginRight: '3px',
             alignItems: 'center',
-            display: 'flex',
+            display: 'flex !important',
             transition: 'all ease 0.2s',
             borderRadius: '50px',
             overflow: 'hidden',
