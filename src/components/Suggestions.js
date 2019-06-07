@@ -26,6 +26,16 @@ const popularSearchStyles = ({ textColor }) => css`
     }
 `;
 
+const highlightStyle = ({ primaryColor, titleColor }) => css`
+    mark{
+        font-weight: 700;
+        padding: 0;
+        background: ${primaryColor}33;
+        color: ${titleColor}
+        fontSize: 1rem;
+    }
+`;
+
 const Suggestions = ({
     currentValue,
     categories,
@@ -39,6 +49,7 @@ const Suggestions = ({
     loading,
     customMessage,
     customSuggestions,
+    themeType,
 }) => (
     <div
         css={{
@@ -46,7 +57,7 @@ const Suggestions = ({
             padding: 10,
             color: '#424242',
             fontSize: '0.9rem',
-            border: '1px solid #ddd',
+            border: themeType === 'minimal' ? '0px' : '1px solid #ddd',
             background: 'white',
             borderRadius: 2,
             marginTop: 0,
@@ -54,7 +65,10 @@ const Suggestions = ({
             zIndex: 10,
             maxHeight: 500,
             overflowY: 'scroll',
-            boxShadow: '0 2px 4px #d9d9d9',
+            boxShadow:
+                themeType === 'minimal'
+                    ? '0 2px 4px #e8e8e8'
+                    : '0 2px 4px #d9d9d9',
         }}
     >
         {loading ? (
@@ -77,6 +91,7 @@ const Suggestions = ({
                 {!loading && parsedSuggestions.length === 0 && (
                     <React.Fragment>
                         <div
+                            className={highlightStyle(themeConfig.colors)}
                             dangerouslySetInnerHTML={{
                                 __html: get(
                                     customMessage,
