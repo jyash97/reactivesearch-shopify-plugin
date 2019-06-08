@@ -53,14 +53,14 @@ const paginationStyle = toggleFilters => css`
     },
 `;
 
-const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
+export const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
     position: relative;
     overflow: hidden;
 
     .product-button {
         top: -50%;
         position: absolute;
-        background: ${primaryColor};
+        background: ${primaryColor} !important;
         border: 0;
         box-shadow: 0 2px 4px ${titleColor}33;
         left: 50%;
@@ -72,8 +72,10 @@ const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
         content: '';
         width: 100%;
         height: 0vh;
-        background: ${primaryColor}00;
+        background: ${primaryColor}00 !important;
         position: absolute;
+        top: 0;
+        left: 0;
         display: block;
         transition: all ease 0.4s;
     }
@@ -92,12 +94,12 @@ const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
         ::before {
             width: 100%;
             height: 100vh;
-            background: ${primaryColor}1a;
+            background: ${primaryColor}1a !important;
         }
     }
 `;
 
-const cardTitleStyles = ({ titleColor, primaryColor }) => css`
+export const cardTitleStyles = ({ titleColor, primaryColor }) => css`
     margin: 0;
     padding: 0;
     color: ${titleColor};
@@ -177,8 +179,13 @@ class Search extends Component {
                 customMessage: get(preferenceMessage, 'customMessage', ''),
                 customSuggestions: get(
                     preferenceMessage,
-                    'customSuggestions',
+                    'default.search.customSuggestions',
                     '',
+                ),
+                autoSuggest: get(
+                    preferenceMessage,
+                    'default.search.autoSuggest',
+                    true,
                 ),
                 theme: get(preferenceMessage, '_theme', {
                     colors: {
@@ -443,6 +450,8 @@ class Search extends Component {
             preferences,
             customMessage,
             customSuggestions,
+            autoSuggest,
+            themeType,
         } = this.state;
         const { search } = preferences;
         return (
@@ -472,6 +481,7 @@ class Search extends Component {
                     top: '10px',
                     zIndex: 4,
                 }}
+                autosuggest={autoSuggest}
                 render={({
                     value,
                     categories,
@@ -483,6 +493,7 @@ class Search extends Component {
                         downshiftProps.isOpen &&
                         Boolean(value.length) && (
                             <Suggestions
+                                themeType={themeType}
                                 currentValue={value}
                                 categories={categories}
                                 customMessage={customMessage}

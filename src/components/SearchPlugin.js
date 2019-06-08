@@ -136,10 +136,10 @@ class App extends Component {
                 {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
                 <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
                     <div className="icon-container">
-                        {searchButton.icon ? (
+                        {searchButton.searchIcon ? (
                             <div
                                 dangerouslySetInnerHTML={{
-                                    __html: searchButton.icon,
+                                    __html: searchButton.searchIcon,
                                 }}
                             />
                         ) : (
@@ -151,7 +151,7 @@ class App extends Component {
                     </div>
 
                     <div className={`text-container ${getTextClass(theme)}`}>
-                        {searchButton.text || 'Click here to Search'}
+                        {searchButton.searchText || 'Click here to Search'}
                     </div>
                 </Button>
                 {isValid && isOpen && (

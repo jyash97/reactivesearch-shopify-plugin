@@ -14,7 +14,7 @@ import Loader from './Loader';
 const appname = window.APPNAME;
 const credentials = window.CREDENTIALS;
 
-const maxProductSize = 5;
+const maxProductSize = 4;
 
 const buttonLeft = css({
     [mediaMax.small]: {
@@ -97,6 +97,12 @@ class ProductSuggestions extends React.Component {
                         },
                     }),
                     currency: get(preferenceMessage, '_store.currency', ''),
+                    themeType: get(preferenceMessage, '_themeType', 'classic'),
+                    customTitle: get(
+                        preferenceMessage,
+                        'productRecommendation.title',
+                        '',
+                    ),
                 });
             } catch (error) {
                 // eslint-disable-next-line
@@ -158,7 +164,14 @@ class ProductSuggestions extends React.Component {
     };
 
     render() {
-        const { theme, currency, preferences, maxSize } = this.state;
+        const {
+            theme,
+            currency,
+            preferences,
+            maxSize,
+            themeType,
+            customTitle,
+        } = this.state;
         if (!preferences) {
             return <Loader />;
         }
@@ -182,7 +195,9 @@ class ProductSuggestions extends React.Component {
                 analytics
             >
                 <div css={{ margin: '25px auto', position: 'relative' }}>
-                    <div css={titleCls}>You might also like</div>
+                    <div css={titleCls}>
+                        {customTitle || 'You might also like'}
+                    </div>
                     <ReactiveList
                         defaultQuery={() => ({
                             query: { term: { type: 'products' } },
@@ -228,6 +243,8 @@ class ProductSuggestions extends React.Component {
                                             ) => (
                                                 <SuggestionCard
                                                     key={_id}
+                                                    theme={theme}
+                                                    themeType={themeType}
                                                     {...{
                                                         handle,
                                                         image,
@@ -275,6 +292,10 @@ class ProductSuggestions extends React.Component {
                             pagination: css({
                                 display: 'none',
                             }),
+                            poweredBy: css({
+                                visibility: 'hidden',
+                                display: 'none',
+                            }),
                             noResults: css({
                                 display: 'flex',
                                 justifyContent: 'center',
@@ -285,7 +306,7 @@ class ProductSuggestions extends React.Component {
                             }),
                         }}
                         {...result}
-                        size={15}
+                        size={10}
                     />
                 </div>
             </ReactiveBase>
