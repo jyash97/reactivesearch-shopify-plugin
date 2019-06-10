@@ -458,8 +458,10 @@ class Search extends Component {
             autoSuggest,
             themeType,
             customIcon,
+            toggleFilters,
         } = this.state;
         const { search } = preferences;
+
         return (
             <CategorySearch
                 componentId="search"
@@ -487,6 +489,7 @@ class Search extends Component {
                     position: 'sticky',
                     top: '10px',
                     zIndex: 4,
+                    display: toggleFilters ? 'none' : 'block',
                 }}
                 autosuggest={autoSuggest}
                 render={({
