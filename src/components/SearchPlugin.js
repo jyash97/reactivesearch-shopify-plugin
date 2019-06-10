@@ -24,7 +24,7 @@ if (!credentials) {
 const modalStyles = css`
     top: 0 !important;
     height: 100vh;
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
     overflow-y: scroll;
     .ant-modal {
         top: 0;
@@ -33,7 +33,7 @@ const modalStyles = css`
         border-radius: 0;
     }
     @media (max-width: 767px) {
-        margin: 0;
+        margin: 0 !important;
     }
 `;
 
