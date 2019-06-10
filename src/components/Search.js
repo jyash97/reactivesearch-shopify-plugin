@@ -1033,6 +1033,8 @@ class Search extends Component {
                                     }),
                                     poweredBy: css({
                                         margin: 15,
+                                        display: 'none',
+                                        visibility: 'hidden',
                                     }),
                                     noResults: css({
                                         display: 'flex',
