@@ -137,10 +137,9 @@ class App extends Component {
                 <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
                     <div className="icon-container">
                         {searchButton.searchIcon ? (
-                            <div
-                                dangerouslySetInnerHTML={{
-                                    __html: searchButton.searchIcon,
-                                }}
+                            <img
+                                src={searchButton.searchIcon}
+                                alt="Search Icon"
                             />
                         ) : (
                             <Icon
