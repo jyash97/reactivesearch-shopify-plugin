@@ -182,6 +182,11 @@ class Search extends Component {
                     'default.search.customSuggestions',
                     '',
                 ),
+                customIcon: get(
+                    preferenceMessage,
+                    'searchButton.searchIcon',
+                    '',
+                ),
                 autoSuggest: get(
                     preferenceMessage,
                     'default.search.autoSuggest',
@@ -452,6 +457,7 @@ class Search extends Component {
             customSuggestions,
             autoSuggest,
             themeType,
+            customIcon,
         } = this.state;
         const { search } = preferences;
         return (
@@ -475,6 +481,7 @@ class Search extends Component {
                 className="search"
                 placeholder="Search for products..."
                 iconPosition="right"
+                icon={customIcon || undefined}
                 css={{
                     marginBottom: 20,
                     position: 'sticky',
