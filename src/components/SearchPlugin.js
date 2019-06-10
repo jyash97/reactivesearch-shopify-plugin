@@ -22,7 +22,7 @@ if (!credentials) {
 }
 
 const modalStyles = css`
-    top: 0;
+    top: 0 !important;
     height: 100vh;
     overflow-y: scroll;
     .ant-modal {
