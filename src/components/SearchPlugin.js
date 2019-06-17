@@ -89,6 +89,7 @@ class App extends Component {
             isOpen: Boolean(props.isOpen),
             theme: {},
             searchButton: {},
+            preferences: null,
         };
     }
 
@@ -99,6 +100,7 @@ class App extends Component {
                 this.setState({
                     theme: get(preferences, 'message._theme', {}),
                     searchButton: get(preferences, 'message.searchButton', {}),
+                    preferences,
                 });
             } catch (error) {
                 // eslint-disable-next-line
@@ -114,7 +116,7 @@ class App extends Component {
     };
 
     render() {
-        const { isOpen, theme, searchButton } = this.state;
+        const { isOpen, theme, searchButton, preferences } = this.state;
         const { openWithModal } = this.props;
         const isValid = appname && credentials;
         const isOpenWithModal = Boolean(openWithModal);
@@ -135,25 +137,32 @@ class App extends Component {
         return (
             <Fragment>
                 {fontFamilyLink ? <Helmet>{fontFamilyLink}</Helmet> : null}
-                <Button css={getButtonClass(theme)} onClick={this.toggleModal}>
-                    <div className="icon-container">
-                        {searchButton.searchIcon ? (
-                            <img
-                                src={searchButton.searchIcon}
-                                alt="Search Icon"
-                            />
-                        ) : (
-                            <Icon
-                                className={getIconClass(theme)}
-                                type="search"
-                            />
-                        )}
-                    </div>
+                {preferences ? (
+                    <Button
+                        css={getButtonClass(theme)}
+                        onClick={this.toggleModal}
+                    >
+                        <div className="icon-container">
+                            {searchButton.searchIcon ? (
+                                <img
+                                    src={searchButton.searchIcon}
+                                    alt="Search Icon"
+                                />
+                            ) : (
+                                <Icon
+                                    className={getIconClass(theme)}
+                                    type="search"
+                                />
+                            )}
+                        </div>
 
-                    <div className={`text-container ${getTextClass(theme)}`}>
-                        {searchButton.searchText || 'Click here to Search'}
-                    </div>
-                </Button>
+                        <div
+                            className={`text-container ${getTextClass(theme)}`}
+                        >
+                            {searchButton.searchText || 'Click here to Search'}
+                        </div>
+                    </Button>
+                ) : null}
                 {isValid && isOpen && (
                     <Modal
                         visible={isOpen}

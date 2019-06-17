@@ -151,6 +151,8 @@ const checkPreferences = settingsFetched => {
     return defaultSettings;
 };
 
+const searchRef = React.createRef();
+
 class Search extends Component {
     state = {
         preferences: null,
@@ -209,6 +211,12 @@ class Search extends Component {
                 currency: get(preferenceMessage, '_store.currency', ''),
                 themeType: get(preferenceMessage, '_themeType', 'classic'),
             });
+
+            const inputRef = get(searchRef, 'current._inputRef', null);
+
+            if (inputRef) {
+                inputRef.focus();
+            }
 
             const globalStyles = get(preferenceMessage, 'customStyles', '');
             injectGlobal`
@@ -484,6 +492,7 @@ class Search extends Component {
                 placeholder="Search for products..."
                 iconPosition="right"
                 icon={customIcon || undefined}
+                ref={searchRef}
                 css={{
                     marginBottom: 20,
                     position: 'sticky',
@@ -713,49 +722,6 @@ class Search extends Component {
                                         />
                                     </Panel>
                                 ))}
-                                {settings.showPrice ? (
-                                    <Panel
-                                        header={
-                                            <span
-                                                css={{
-                                                    color:
-                                                        theme.colors.titleColor,
-                                                    fontWeight: 'bold',
-                                                    fontSize: '15px',
-                                                }}
-                                            >
-                                                Price
-                                            </span>
-                                        }
-                                        showArrow={themeType !== 'minimal'}
-                                        key="price-filter"
-                                        css={this.getFontFamily()}
-                                        className="filter"
-                                    >
-                                        <DynamicRangeSlider
-                                            componentId="price"
-                                            dataField="variants.price"
-                                            tooltipTrigger="hover"
-                                            css={this.getFontFamily()}
-                                            loader={
-                                                <div
-                                                    className={loaderStyle}
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: get(
-                                                            customMessage,
-                                                            'fetchingFilterOptions',
-                                                            '',
-                                                        ),
-                                                    }}
-                                                />
-                                            }
-                                            rangeLabels={(min, max) => ({
-                                                start: `${currency} ${min}`,
-                                                end: `${currency} ${max}`,
-                                            })}
-                                        />
-                                    </Panel>
-                                ) : null}
                                 {settings.showCollectionsFilter ? (
                                     <Panel
                                         header={
@@ -826,6 +792,51 @@ class Search extends Component {
                                         {this.renderSizeFilter(
                                             this.getFontFamily,
                                         )}
+                                    </Panel>
+                                ) : null}
+                                {settings.showPrice ? (
+                                    <Panel
+                                        header={
+                                            <span
+                                                css={{
+                                                    color:
+                                                        theme.colors.titleColor,
+                                                    fontWeight: 'bold',
+                                                    fontSize: '15px',
+                                                }}
+                                            >
+                                                Price
+                                            </span>
+                                        }
+                                        showArrow={themeType !== 'minimal'}
+                                        key="price-filter"
+                                        css={this.getFontFamily()}
+                                        className="filter"
+                                    >
+                                        <DynamicRangeSlider
+                                            componentId="price"
+                                            dataField="variants.price"
+                                            tooltipTrigger="hover"
+                                            showHistogram={false}
+                                            style={{ marginTop: 50 }}
+                                            css={this.getFontFamily()}
+                                            loader={
+                                                <div
+                                                    className={loaderStyle}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: get(
+                                                            customMessage,
+                                                            'fetchingFilterOptions',
+                                                            '',
+                                                        ),
+                                                    }}
+                                                />
+                                            }
+                                            rangeLabels={(min, max) => ({
+                                                start: `${currency} ${min}`,
+                                                end: `${currency} ${max}`,
+                                            })}
+                                        />
                                     </Panel>
                                 ) : null}
                             </Collapse>
