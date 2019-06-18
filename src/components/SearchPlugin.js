@@ -3,8 +3,8 @@ import { css } from 'react-emotion';
 import { Button, Modal, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { getPreferences } from '../utils';
 import get from 'lodash.get';
+import { getPreferences } from '../utils';
 
 import Search from './Search';
 
