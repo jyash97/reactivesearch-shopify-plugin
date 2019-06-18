@@ -69,7 +69,7 @@ class ProductSuggestions extends React.Component {
         preferences: null,
         theme: {},
         currency: '',
-        // currentPage: 1,
+        currentPage: 1,
         maxSize: maxProductSize,
     };
 
@@ -140,27 +140,25 @@ class ProductSuggestions extends React.Component {
     };
 
     nextPage = () => {
-        // this.setState(
-        //     prevState => ({
-        //         currentPage: prevState.currentPage + 1,
-        //     }),
-        //     () => {
-        //         this.slick.slickNext();
-        //     },
-        // );
-        this.slick.slickNext();
+        this.setState(
+            prevState => ({
+                currentPage: prevState.currentPage + 1,
+            }),
+            () => {
+                this.slick.slickNext();
+            },
+        );
     };
 
     prevPage = () => {
-        // this.setState(
-        //     prevState => ({
-        //         currentPage: prevState.currentPage - 1,
-        //     }),
-        //     () => {
-        //         this.slick.slickPrev();
-        //     },
-        // );
-        this.slick.slickPrev();
+        this.setState(
+            prevState => ({
+                currentPage: prevState.currentPage - 1,
+            }),
+            () => {
+                this.slick.slickPrev();
+            },
+        );
     };
 
     render() {
@@ -171,6 +169,7 @@ class ProductSuggestions extends React.Component {
             maxSize,
             themeType,
             customTitle,
+            currentPage,
         } = this.state;
         if (!preferences) {
             return <Loader />;
@@ -209,6 +208,7 @@ class ProductSuggestions extends React.Component {
                         render={({ data, triggerAnalytics }) => (
                             <div css={main}>
                                 <Button
+                                    disabled={currentPage === 1}
                                     className={buttonLeft}
                                     onClick={this.prevPage}
                                 >
@@ -264,6 +264,7 @@ class ProductSuggestions extends React.Component {
                                 </div>
 
                                 <Button
+                                    disabled={currentPage * maxSize >= 10}
                                     className={buttonRight}
                                     onClick={this.nextPage}
                                 >
