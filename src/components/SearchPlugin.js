@@ -43,24 +43,24 @@ const getButtonClass = theme => {
         button: {
             borderColor: `${primaryColor} !important`,
             backgroundColor: 'transparent !important',
-            marginLeft: 3,
-            marginRight: 3,
-            // alignItems: 'center',
-            // display: 'flex !important',
-            // transition: 'all ease 0.2s',
-            // borderRadius: '50px',
-            // overflow: 'hidden',
-            // boxShadow: `0 0 0 2px ${primaryColor}1a`,
-            // '&:hover': {
-            //     '& .text-container': { marginLeft: 5, width: '100%' },
-            // },
-            // '& .text-container': {
-            //     display: 'inline-flex',
-            //     width: '0px',
-            //     overflow: 'hidden',
-            //     transition: 'all ease 0.2s',
-            // },
-            // img: { width: 40 },
+            marginLeft: '3px',
+            marginRight: '3px',
+            alignItems: 'center',
+            display: 'flex !important',
+            transition: 'all ease 0.2s',
+            borderRadius: '50px',
+            overflow: 'hidden',
+            boxShadow: `0 0 0 2px ${primaryColor}1a`,
+            '&:hover': {
+                '& .text-container': { marginLeft: 5, width: '100%' },
+            },
+            '& .text-container': {
+                display: 'inline-flex',
+                width: '0px',
+                overflow: 'hidden',
+                transition: 'all ease 0.2s',
+            },
+            img: { width: 40 },
         },
     };
 
