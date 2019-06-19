@@ -23,6 +23,8 @@ import { browserColors } from '../utils';
 const { Meta } = Card;
 const { Panel } = Collapse;
 
+const resultRef = React.createRef();
+
 const minimalSearchStyles = ({ titleColor }) => css`
     input {
         background: transparent;
@@ -176,6 +178,12 @@ class Search extends Component {
 
             this.getPopularSearches();
             const preferenceMessage = get(preferences, 'message', {});
+
+            const pagination = get(
+                preferenceMessage,
+                'default.result.pagination',
+                true,
+            );
             this.setState({
                 preferences: get(preferenceMessage, 'default', {}),
                 customMessage: get(preferenceMessage, 'customMessage', ''),
@@ -184,6 +192,7 @@ class Search extends Component {
                     'default.search.customSuggestions',
                     '',
                 ),
+                pagination,
                 customIcon: get(
                     preferenceMessage,
                     'searchButton.searchIcon',
@@ -222,6 +231,20 @@ class Search extends Component {
             injectGlobal`
                 ${globalStyles}
             `;
+
+            if (!pagination) {
+                const containerCollection = document.getElementsByClassName(
+                    'ant-modal',
+                );
+
+                if (containerCollection && containerCollection.length > 0) {
+                    this.scrollContainer = containerCollection[0];
+                    this.scrollContainer.addEventListener(
+                        'scroll',
+                        this.scrollHandler,
+                    );
+                }
+            }
         } catch (error) {
             // eslint-disable-next-line
             console.error(error);
@@ -254,6 +277,16 @@ class Search extends Component {
             }
         } catch (e) {
             console.error('No Popular Searches');
+        }
+    };
+
+    scrollHandler = () => {
+        const { scrollTop, clientHeight, scrollHeight } = this.scrollContainer;
+
+        if (scrollTop + clientHeight >= scrollHeight) {
+            if (resultRef.current) {
+                resultRef.current.loadMore();
+            }
         }
     };
 
@@ -568,6 +601,7 @@ class Search extends Component {
             toggleFilters,
             settings,
             customMessage,
+            pagination,
         } = this.state;
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
@@ -861,6 +895,7 @@ class Search extends Component {
                                 defaultQuery={() => ({
                                     query: { term: { type: 'products' } },
                                 })}
+                                ref={resultRef}
                                 renderNoResults={() => (
                                     <div
                                         css={{ textAlign: 'right' }}
@@ -1010,7 +1045,7 @@ class Search extends Component {
                                         </Card>
                                     </a>
                                 )}
-                                pagination
+                                pagination={pagination}
                                 size={9}
                                 innerClass={{
                                     list: css({

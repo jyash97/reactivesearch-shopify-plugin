@@ -31,6 +31,7 @@ const modalStyles = css`
     }
     .ant-modal-content {
         border-radius: 0;
+        min-height: 100%;
     }
     @media (max-width: 767px) {
         margin: 0 !important;
