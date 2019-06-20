@@ -39,7 +39,7 @@ const loaderStyle = css`
     position: relative;
 `;
 
-const paginationStyle = toggleFilters => css`
+const paginationStyle = (toggleFilters, color) => css`
     max-width:none;
     a{
         border-radius: 2px;
@@ -50,6 +50,9 @@ const paginationStyle = toggleFilters => css`
     a:last-child{
         float: right;
     }
+    a.active {
+        color: ${color};
+    }
     @media(max-width: 768px){
         display: ${toggleFilters ? 'none' : 'block'}
     },
@@ -58,6 +61,8 @@ const paginationStyle = toggleFilters => css`
 export const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
     position: relative;
     overflow: hidden;
+    height: 100%;
+    max-width: 300px;
 
     .product-button {
         top: -50%;
@@ -82,9 +87,25 @@ export const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
         transition: all ease 0.4s;
     }
 
+    .ant-card-cover {
+        height: 250px;
+    }
+
+    .ant-card-cover img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
+
     .ant-card-meta-title {
         color: ${titleColor};
     }
+
+    .ant-card-meta-title h3 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .ant-card-meta-description {
         color: ${textColor};
     }
@@ -97,6 +118,12 @@ export const cardStyles = ({ textColor, titleColor, primaryColor }) => css`
             width: 100%;
             height: 100vh;
             background: ${primaryColor}1a !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .ant-card-cover img {
+            object-fit: contain;
         }
     }
 `;
@@ -206,7 +233,6 @@ class Search extends Component {
                 theme: get(preferenceMessage, '_theme', {
                     colors: {
                         primaryColor: '#0B6AFF',
-                        primaryTextColor: '#fff',
                         textColor: '#424242',
                         titleColor: '#424242',
                     },
@@ -1090,7 +1116,10 @@ class Search extends Component {
                                         justifyContent: 'center',
                                         padding: '25px 0',
                                     }),
-                                    pagination: paginationStyle(toggleFilters),
+                                    pagination: paginationStyle(
+                                        toggleFilters,
+                                        theme.colors.textColor,
+                                    ),
                                 }}
                                 {...result}
                                 react={{

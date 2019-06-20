@@ -62,9 +62,9 @@ const Suggestions = ({
             borderRadius: 2,
             marginTop: 0,
             width: '100%',
-            zIndex: 10,
-            maxHeight: 500,
             overflowY: 'scroll',
+            zIndex: 10,
+            maxHeight: '100vh',
             boxShadow:
                 themeType === 'minimal'
                     ? '0 2px 4px #e8e8e8'
@@ -108,7 +108,7 @@ const Suggestions = ({
                     </h3>
                 ) : null}
 
-                {parsedSuggestions.slice(0, 5).map((suggestion, index) => (
+                {parsedSuggestions.slice(0, 3).map((suggestion, index) => (
                     <a
                         href={`/products/${suggestion._source.handle}`}
                         key={suggestion.value}
@@ -146,7 +146,12 @@ const Suggestions = ({
                                         css={{ marginRight: 15 }}
                                     />
                                 )}
-                                <div>
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        overflow: 'hidden',
+                                    }}
+                                >
                                     <Highlight
                                         searchWords={currentValue.split(' ')}
                                         textToHighlight={get(
@@ -175,6 +180,9 @@ const Suggestions = ({
                                             fontSize: '0.8rem',
                                             margin: '2px 0',
                                             color: themeConfig.colors.textColor,
+                                            whiteSpace: 'nowrap',
+                                            textOverflow: 'ellipsis',
+                                            overflow: 'hidden',
                                         }}
                                     >
                                         <Highlight
@@ -235,18 +243,6 @@ const Suggestions = ({
                     </a>
                 ))}
 
-                <h3
-                    className={headingStyles(themeConfig.colors)}
-                    style={{ cursor: 'pointer' }}
-                    {...getItemProps({
-                        item: {
-                            value: currentValue,
-                        },
-                    })}
-                >
-                    Show all results for {currentValue}
-                </h3>
-
                 {popularSearches.length > 0 && showPopularSearches ? (
                     <h3 className={headingStyles(themeConfig.colors)}>
                         Popular Searches
@@ -270,6 +266,22 @@ const Suggestions = ({
                           </div>
                       ))
                     : null}
+
+                <h3
+                    className={headingStyles(themeConfig.colors)}
+                    style={{
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                    }}
+                    {...getItemProps({
+                        item: {
+                            value: currentValue,
+                        },
+                    })}
+                >
+                    {`Show all results for "${currentValue}"`}
+                </h3>
 
                 {customSuggestions ? (
                     <div
