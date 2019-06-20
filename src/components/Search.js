@@ -193,6 +193,11 @@ class Search extends Component {
                     '',
                 ),
                 pagination,
+                showDescription: get(
+                    preferenceMessage,
+                    'default.result.showDescription',
+                    true,
+                ),
                 customIcon: get(
                     preferenceMessage,
                     'searchButton.searchIcon',
@@ -602,6 +607,7 @@ class Search extends Component {
             settings,
             customMessage,
             pagination,
+            showDescription,
         } = this.state;
         const isMobile = window.innerWidth < 768;
         if (!preferences) {
@@ -999,6 +1005,7 @@ class Search extends Component {
                                                     />
                                                 }
                                                 description={
+                                                    showDescription &&
                                                     themeType === 'classic' && (
                                                         <Truncate
                                                             lines={4}
