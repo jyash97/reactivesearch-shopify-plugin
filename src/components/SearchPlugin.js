@@ -118,9 +118,11 @@ class App extends Component {
 
     render() {
         const { isOpen, theme, searchButton, preferences } = this.state;
-        const { openWithModal } = this.props;
+        const { openWithModal, disableSearchText } = this.props;
         const isValid = appname && credentials;
         const isOpenWithModal = Boolean(openWithModal);
+        const isSearchTextHidden = Boolean(disableSearchText);
+
         let fontFamilyLink = '';
         const fontFamily = get(theme, 'typography.fontFamily');
         if (fontFamily && fontFamily !== 'default') {
@@ -156,12 +158,16 @@ class App extends Component {
                                 />
                             )}
                         </div>
-
-                        <div
-                            className={`text-container ${getTextClass(theme)}`}
-                        >
-                            {searchButton.searchText || 'Click here to Search'}
-                        </div>
+                        {isSearchTextHidden ? null : (
+                            <div
+                                className={`text-container ${getTextClass(
+                                    theme,
+                                )}`}
+                            >
+                                {searchButton.searchText ||
+                                    'Click here to Search'}
+                            </div>
+                        )}
                     </Button>
                 ) : null}
                 {isValid && isOpen && (
@@ -181,10 +187,12 @@ class App extends Component {
 }
 App.defaultProps = {
     openWithModal: 'true',
+    disableSearchText: 'false',
     isOpen: 'false', // if true, then modal will be in open state
 };
 App.propTypes = {
     openWithModal: PropTypes.string,
+    disableSearchText: PropTypes.string,
     isOpen: PropTypes.string,
 };
 export default App;
